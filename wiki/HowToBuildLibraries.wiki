@@ -69,6 +69,5 @@ javac jp/co/cia/pmcode/PMCodeEncoderJNI.java
 ./run_linux.sh
 }}}
 == 確認 ==
-pmcode.bmp を開いてください。
-
-http://feelsketch.googlecode.com/svn/trunk/lib/sample/jni-sample/pmcode.bmp
+pmcode.bmpというファイルが生成されていれば成功です。
+画像ファイルを開いてください。
