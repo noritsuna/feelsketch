@@ -1,7 +1,7 @@
-noinst_LIBRARIES = libPMCodeEncoder.a
+lib_LTLIBRARIES = libPMCodeEncoder.la
 #libPMCodeEncoder_a_CPPFLAGS = -I../../PMCodeCommon/src/
 INCLUDES = -I../../PMCodeCommon/src/
-libPMCodeEncoder_a_SOURCES = \
+libPMCodeEncoder_la_SOURCES = \
 														ImageUtil.cpp \
 														ImageUtil.h \
 														PMCodeColorCodeSetting.cpp \
@@ -20,13 +20,4 @@ libPMCodeEncoder_a_SOURCES = \
 														QRCodeEncode.h \
 														QRCodeToPMCode.cpp \
 														QRCodeToPMCode.h
-libPMCodeEncoder_a_LIBADD = \
-														ImageUtil.o \
-														PMCodeColorCodeSetting.o \
-														PMCodeEncode.o \
-														PMCodeEncodeParameter.o \
-														PMCodeEncoder.o \
-														PMCodeImageData.o \
-														PMCodeMakeHeader.o \
-														QRCodeEncode.o \
-														QRCodeToPMCode.o
+

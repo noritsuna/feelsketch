@@ -6,6 +6,7 @@ AC_INIT([PMCode], [1.0], [oss.pmcode@ci-a.com])
 AM_INIT_AUTOMAKE([foreign])
 AC_CONFIG_SRCDIR([PMCodeCommon/src/define.h])
 AC_CONFIG_HEADERS([config.h])
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -30,5 +31,6 @@ AC_CONFIG_FILES([Makefile
                  PMCodeDecoder/src/Makefile
                  PMCodeEncoder/Makefile
                  PMCodeEncoder/src/Makefile])
-AC_PROG_RANLIB
+#AC_PROG_RANLIB
+AC_PROG_LIBTOOL
 AC_OUTPUT

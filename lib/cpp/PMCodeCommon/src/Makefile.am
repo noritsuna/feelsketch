@@ -1,5 +1,5 @@
-noinst_LIBRARIES = libPMCodeCommon.a
-libPMCodeCommon_a_SOURCES = \
+lib_LTLIBRARIES = libPMCodeCommon.la
+libPMCodeCommon_la_SOURCES = \
 														Global.cpp \
 														Global.h \
 														QRCodeDisposition.cpp \
@@ -13,10 +13,4 @@ libPMCodeCommon_a_SOURCES = \
 														define.h \
 														mathematics.cpp \
 														mathematics.h
-libPMCodeCommon_a_LIBADD = \
-														Global.o \
-														QRCodeDisposition.o \
-														QRCodeMask.o \
-														QRCodeSymbol.o \
-														ReedSolomon.o \
-														mathematics.o
+

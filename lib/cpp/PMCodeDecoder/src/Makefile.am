@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libPMCodeDecoder.a
+lib_LTLIBRARIES = libPMCodeDecoder.la
 INCLUDES = -I../../PMCodeCommon/src/
-libPMCodeDecoder_a_SOURCES = \
+libPMCodeDecoder_la_SOURCES = \
 														PMCodeAnalysis.cpp \
 														PMCodeAnalysis.h \
 														PMCodeDecode.cpp \
@@ -15,12 +15,4 @@ libPMCodeDecoder_a_SOURCES = \
 														QRCodeRestoration.h \
 														QRCodeUnMask.cpp \
 														QRCodeUnMask.h
-libPMCodeDecoder_a_LIBADD = \
-														PMCodeAnalysis.o \
-														PMCodeDecode.o \
-														PMCodeReader.o \
-														PMCodeToQRCodes.o \
-														QRCodeDecode.o \
-														QRCodeRestoration.o \
-														QRCodeUnMask.o
 
