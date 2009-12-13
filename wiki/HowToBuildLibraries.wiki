@@ -51,3 +51,24 @@ cd feelsketch/lib/jni/PMCodeEncoderJNI
 make
 sudo make install
 }}}
+
+= JNIサンプル =
+== ビルド ==
+{{{
+cd feelsketch/lib/sample/jni-sample
+javac jp/co/cia/pmcode/PMCodeEncoderSample.java
+javac jp/co/cia/pmcode/PMCodeEncoderJNI.java
+}}}
+== 実行 ==
+=== Mac OSX ===
+{{{
+./run_osx.sh
+}}}
+=== Linux ===
+{{{
+./run_linux.sh
+}}}
+== 確認 ==
+pmcode.bmp を開いてください。
+
+http://feelsketch.googlecode.com/svn/trunk/lib/sample/jni-sample/pmcode.bmp
