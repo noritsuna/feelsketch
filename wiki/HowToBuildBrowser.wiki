@@ -30,7 +30,7 @@ http://developer.android.com/sdk/ndk/1.6_r1/index.html
 == ソースのダウンロード ==
 {{{
 cd <ndk>/apps
-svn checkout http://feelsketch.googlecode.com/svn/trunk/FeelSketchBrowser
+svn checkout http://feelsketch.googlecode.com/svn/trunk/browser/android/FeelSketchBrowser
 }}}
 
 == ネイティブコードのビルド ==
