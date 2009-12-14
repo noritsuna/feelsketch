@@ -3,10 +3,19 @@
 = ダウンロード =
 
 
+
 = 使い方 =
 
 アプリが起動したら、画面中央の四角にPMCodeを合わせて「Decode」ボタンを押します。
 
+http://feelsketch.googlecode.com/svn/wiki/images/decode.png
+
 認識に失敗した場合はErrorメッセージがでるので、再度PMCodeの認識を行ってください。
 
-認識に成功した場合は、そのままARモードに切り替わります。画面にPMCodeが印刷された紙全体が入るようにしてください。PMCodeをマーカとして認識すれば、ARが表示されます。
+認識に成功した場合は、そのままARモードに切り替わります。画面にPMCodeが印刷された紙全体が入るようにしてください。
+
+http://feelsketch.googlecode.com/svn/wiki/images/br_sample01.png
+
+PMCodeをマーカとして認識すれば、ARが表示されます。
+
+http://feelsketch.googlecode.com/svn/wiki/images/br_sample02.png
