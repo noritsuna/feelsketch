@@ -1,9 +1,5 @@
 #summary AndroidのAR Browserの使い方
 
-= ダウンロード =
-
-
-
 = 使い方 =
 
 アプリが起動したら、画面中央の四角にPMCodeを合わせて「Decode」ボタンを押します。
