@@ -2,21 +2,23 @@
 
 = コンパイル＆起動まで =
 
-１．Eclipseインストール
+== Eclipseインストール ==
 
 Eclipse IDE for Java Developers
+
+http://www.eclipse.org/downloads/moreinfo/java.php
 
 をインストールします。
 
 
-２．Maven2セットアップ
+== Maven2セットアップ ==
 
 Maven2 をインストールし、利用出来るようにパスを通します。
 
 http://maven.apache.org/
 
 
-３，ライブラリの登録
+== ライブラリの登録 ==
 
 Windowsの場合 : release/install.bat
 
@@ -25,28 +27,11 @@ Mac/Linuxの場合 : release/install.sh
 を実行します。
 
 
-４，Maven2リポジトリの登録。
+== Maven2リポジトリの登録 ==
 
 Eclipseを起動して、下記のようにメニューを開いて、Maven2リポジトリを登録します。
 
-Window
-
-↓
-
-Preferences
-
-↓
-
-Java
-
-↓
-
-Build Path
-
-↓
-
-Classpath Variables
-
+Window->Preferences->Java->Build Path->Classpath Variables
 
 にて、
 
@@ -54,52 +39,23 @@ M2_REPO
 
 [自分のホームディレクトリ]/.m2/repository
 
-
 を設定します。
 
 
-５，"Feel Sketch" authoring tool プロジェクトを登録
+== "Feel Sketch" authoring tool プロジェクトを登録 ==
 
-File
-
-↓
-
-Import
-
-↓
-
-General
-
-↓
-
-Existing Projects into Workspace
-
-↓
-
-Select root directory
+File->Import->General->Existing Projects into Workspace->Select root directory
 
 にて、"Feel Sketch" authoring tool の解凍先ディレクトリを指定します。
-
-↓
 
 「Finish」 ボタンを押します。
 
 で登録されます。
 
 
-６，Runの設定
+== Runの設定 ==
 
-Run
-
-↓
-
-Run Configurations
-
-↓
-
-Java Application
-
-↓
+Run->Run Configurations->Java Application
 
 右クリックして、「new」を選択します。
 
@@ -112,7 +68,7 @@ Main Classに、「com.nullfish.app.feel_sketch.Launcher」
 を入力して、「Apply」ボタンを押します。
 
 
-７，起動
+== 起動 ==
 
 Run で、「Feel Sketch authoring tool」を選択すれば、起動します。
 
@@ -122,27 +78,15 @@ Run で、「Feel Sketch authoring tool」を選択すれば、起動します�
 
 = 実行ファイルの作り方（Runnable JARを作る） =
 
-１，Runnable JARメニューの起動
+== Runnable JARメニューの起動 ==
 
-File
-
-↓
-
-Export
-
-↓
-
-Java
-
-↓
-
-Runnable JAR file
+File->Export->Java->Runnable JAR file
 
 を選択します。
 
 
 
-２，Runnable JARの生成
+== Runnable JARの生成 ==
 
 「Runnable JAR File Export」画面が起動するので、
 
