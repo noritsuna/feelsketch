@@ -1,0 +1,13 @@
+com.nullfish.app.feel_sketch
+com.nullfish.app.feel_sketch.editor
+com.nullfish.app.feel_sketch.editor.elements.bezier_line
+com.nullfish.app.feel_sketch.editor.elements.image
+com.nullfish.app.feel_sketch.editor.mode
+com.nullfish.app.feel_sketch.parser
+com.nullfish.app.feel_sketch.ui
+com.nullfish.app.feel_sketch.ui.bg
+com.nullfish.app.feel_sketch.ui.layer
+com.nullfish.app.feel_sketch.ui.palette
+com.nullfish.app.feel_sketch.util
+com.nullfish.lib.quad_tree
+jp.co.cia.pmcode
