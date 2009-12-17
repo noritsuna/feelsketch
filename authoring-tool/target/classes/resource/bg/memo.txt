@@ -1,0 +1,6 @@
+Put background images in this folder.
+Files must be PNG.
+The file name is like "(NUMBER).png"
+The number is bigger  equal 32.
+After putting files, edit BGSelectorTableModel#MAX_COUNT with the maximum image name number.
+

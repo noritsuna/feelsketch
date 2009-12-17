@@ -1,0 +1,3 @@
+Put icon files in this folder.
+The file name must be like "(NUMBER).png".
+Edit IconPalette#IMAGE_NUMBER after putting files.
