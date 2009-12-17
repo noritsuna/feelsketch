@@ -1,20 +1,21 @@
-#summary C++/JNIライブラリの説明、ビルド方法、サンプルを動かすまで
+#summary C++/JNI Explaining the library, how to build, and how to move the sample.
 
-= C++ライブラリ =
-PMCodeは以下の3つのC++ライブラリで構成されます。
+= C++Library =
+PM-Code is constructed by three C++ Libraries listed below.
  * PMCodeCommon
-  * エンコーダとデコーダの共通部分です。
+  *Common parts of the encoder and the decoder.
  * PMCodeDecoder
-  * デコーダです。PMCodeデータからバイナリデータに変換します。
+  *The decoder. Converts PM-Code data to binary data.
  * PMCodeEncoder
-  * エンコーダです。バイナリデータからPMCodeデータに変換します。
+  *The encoder. Converts binary data to PM-Code data.
 
-= C++ライブラリのビルド =
+= Build C++ Library =
 
-== ダウンロード ==
-http://code.google.com/p/feelsketch/source/checkout からチェックアウトしてください。
+== Download ==
+Check out from this site.
+http://code.google.com/p/feelsketch/source/checkout
 
-== ビルド ==
+== Build ==
 {{{
 cd feelsketch/lib/cpp
 ./configure
@@ -22,29 +23,30 @@ make
 sudo make install
 }}}
 
-= JNIライブラリの構成 =
-現在、エンコーダのJNIライブラリのみ提供しています。
+= How JNI Library is organized. =
+Presently, JNI Library’s encoder is only offered.
  * PMCodeEncoderJNI
-  * エンコーダ用のJNIライブラリです。
-  * PMCodeCommonとPMCodeEncoderに依存します。
+  * JIN Library for the encoder.
+  * Depends on both PM-Code Common and PM-Code Encoder.。
 
-= JNIライブラリのビルド =
+= Building of JNI Library =
 
-== ダウンロード ==
-http://code.google.com/p/feelsketch/source/checkout からチェックアウトしてください。
+== Download ==
+Check out from this site.
+http://code.google.com/p/feelsketch/source/checkout
 
-== 準備 ==
-JDKをインストールします。
+== Preparation ==
+Install JDK.
 http://java.sun.com/javase/downloads/index.jsp
 
-必ず、環境変数 JAVA_HOME に JDK のディレクトリを設定してください。
+Always, select the JDK directory in the environmental variable JAVA_HOME.
 
-例）
+ex)
 {{{
 export JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Versions/1.6.0/Home
 }}}
 
-== ビルド ==
+== Build ==
 {{{
 cd feelsketch/lib/jni/PMCodeEncoderJNI
 ./configure
@@ -52,14 +54,14 @@ make
 sudo make install
 }}}
 
-= JNIサンプル =
-== ビルド ==
+= JNI sample =
+== Build ==
 {{{
 cd feelsketch/lib/sample/jni-sample
 javac jp/co/cia/pmcode/PMCodeEncoderSample.java
 javac jp/co/cia/pmcode/PMCodeEncoderJNI.java
 }}}
-== 実行 ==
+==Perform ==
 === Mac OSX ===
 {{{
 ./run_osx.sh
@@ -68,6 +70,6 @@ javac jp/co/cia/pmcode/PMCodeEncoderJNI.java
 {{{
 ./run_linux.sh
 }}}
-== 確認 ==
-pmcode.bmpというファイルが生成されていれば成功です。
-画像ファイルを開いてください。
+==Conferm ==
+If a file “pmcode.bmp” is created successfully, then the sample works.
+Open the image file.

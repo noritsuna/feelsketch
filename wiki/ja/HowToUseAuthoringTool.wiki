@@ -1,0 +1,160 @@
+#summary Authoring Toolの簡単な解説
+
+= 画面 =
+
+http://feelsketch.googlecode.com/svn/wiki/images/normal.png
+
+を参照。
+この画像に直接、説明を書いて、貼り付けてもらうと良いかも知れない。
+
+
+== 左領域 ==
+機能ウィンドウ
+
+各機能を利用するときに必要な選択肢が出てきます。
+
+
+
+== 中央領域 ==
+パレット
+
+ここに、描画します。
+
+
+== 右領域 ==
+http://feelsketch.googlecode.com/svn/wiki/images/layer01.png
+
+レイヤーを指定する領域です。
+
+レイヤーごとに、PMCode化するや重ね合わせ順を指定することが出来ます。
+
+=== 上下矢印 ボタン ===
+重ね合わせ順を変更する
+
+=== ＋、- ボタン ===
+レイヤーの追加、削除を行います
+
+=== 虫眼鏡 ボタン ===
+レイヤの可視不可視をトグルします。
+
+
+=== レイヤー名 ===
+レイヤーの識別用の名称。自分で指定出来ます。
+
+
+
+
+= メニュー =
+== File ==
+=== New file ===
+※ボタンアイコン：白い紙
+
+新しいキャンバスを作ります。
+
+
+=== Load ===
+※ボタンアイコン：フォルダみたいなヤツ
+
+途中状態の復元します。
+
+
+=== Save ===
+※ボタンアイコン：floppy disk
+
+途中状態の保存します。
+
+
+
+=== Save as image ===
+描画されているモノすべてを画像として、保存します。
+
+
+
+=== Save as image with PM-Code ===
+PM-Code化して、画像として、保存します。
+
+
+
+=== Export ===
+※ボタンアイコン：ドアの絵
+PM-Codeの中に入るべきデータを保存します。
+
+
+
+=== Exit ===
+終了します。
+
+
+
+== Palette ==
+=== Select ===
+※ボタンアイコン：上向き矢印
+
+線やIconをグループ化して扱うためのモードです。
+
+このモードのときに、線やIconを移動したり出来ます。
+
+
+
+=== Pen ===
+※ボタンアイコン：色つきの鉛筆
+
+http://feelsketch.googlecode.com/svn/wiki/images/pen.png
+
+線を描画します。
+
+線は、太さや色を選択することが出来ます。
+そのパレットは、左側に表示されます。
+
+
+
+=== Icon ===
+※ボタンアイコン：写真ぽいヤツ
+
+http://feelsketch.googlecode.com/svn/wiki/images/icon.png
+
+使用可能なIconの一覧が出ます。
+選択後、描画したいキャンパスの場所をクリックすると描画されます。
+
+移動したい場合には、「Select」を使用してください。
+
+
+
+
+=== Eraser ===
+※ボタンアイコン：無色の鉛筆
+
+描画した線やIconを削除します。
+
+
+
+=== Background image ===
+※ボタンアイコン：カメラ
+
+http://feelsketch.googlecode.com/svn/wiki/images/bg.PNG
+
+バックに表示する色や画像を選択します。
+
+==== Maximize ====
+キャンバスサイズに合わせて、拡大縮小します。
+
+==== Tile ====
+キャンバスサイズに合わせて、画像をタイル状に並べます。
+
+==== Center ====
+中央に描画します。
+
+
+
+
+=== Page preference ===
+※ボタンアイコン：歯車
+
+http://feelsketch.googlecode.com/svn/wiki/images/pref.png
+
+==== Image Size ====
+印刷対象の用紙の大きさを指定します。
+
+
+==== PM-Code positon ====
+PM-Codeをどこに表示させるか？を指定します。

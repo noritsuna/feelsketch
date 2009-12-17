@@ -1,67 +1,63 @@
-#summary AndroidのAR Browserのビルド方法
+#summary Android　How to build AR Browse for Android 
 
-= 環境の準備 =
+=　Preparing for the environment =
 
 == Eclipse ==
-Eclipse IDE for Java Developers をインストールします。
+Preparing for the environment 
 
 http://www.eclipse.org/downloads/
 
-== Android SDKとNDK ==
-Android SDKをインストールします。
+== Android SDK and NDK ==
+Install Android SDK.
 
 http://developer.android.com/sdk/index.html
 
-ADT Plugin for Eclipseをインストールします。
+Install ADT Plug in for Eclipse.
 
 http://developer.android.com/sdk/eclipse-adt.html
 
-Android 1.6 Platformを追加します。
+Add Android 1.6 Platform.
 
 http://developer.android.com/sdk/adding-components.html
 
-Android 1.6 NDKをインストールします。
+Install Android 1.6 NDK
 
 http://developer.android.com/sdk/ndk/1.6_r1/index.html
 
 
-= FeelSketchBrowserのビルド =
+= Build ‘Feel Sketch Browser’ =
 
-== ソースのダウンロード ==
+== Downloading the source ==
 {{{
 cd <ndk>/apps
 svn checkout http://feelsketch.googlecode.com/svn/trunk/browser/android/FeelSketchBrowser
 }}}
 
-== ネイティブコードのビルド ==
-ネイティブコードの共有ライブラリをNDKでビルドします。
+==　Build the native code ==
+Build the native code’s common (mutual) library with NDK.
 {{{
 cd <ndk>
 make APP=FeelSketchBrowser
 }}}
 
-== 実行 ==
-Eclipseでprojectを作ります。
+==　Performe ==
+Create ‘project’ by ‘Eclipse.’
 
 File->New->Android Project
 
-を選択して、Contents内の
-
-Create project from existing source
-
-をチェックして、Locationに
+Select ‘Android Project.’ Check (select) the ‘Create project from existing source’ inside the ‘Contents.’ Type in Location, 
 
 `<ndk>`/apps/FeelSketchBrowser/project
 
-を入力してFinishボタンを押します。
+Then click ‘Finish’ button.
 
 
-projectを生成できたら、
+When the project is created、
 
 Project->Clean...
 
-を選択してCleanします。
+Select ‘Clear.’
 
 Run->Android Application
 
-で実行します。
+Start perform.

@@ -1,17 +1,17 @@
-#summary AndroidのAR Browserの使い方
+#summary How to use AR Browser for Android.
 
-= 使い方 =
+= How to use =
 
-アプリが起動したら、画面中央の四角にPMCodeを合わせて「Decode」ボタンを押します。
+When the application started, adjust the PM-Code to the square in the center. Then push ‘Decode’ button.
 
 http://feelsketch.googlecode.com/svn/wiki/images/decode.png
 
-認識に失敗した場合はErrorメッセージがでるので、再度PMCodeの認識を行ってください。
+When decoding fails, a ‘Error’ message shows up. Please try the decoding process again.
 
-認識に成功した場合は、そのままARモードに切り替わります。画面にPMCodeが印刷された紙全体が入るようにしてください。
+When decoding successfully works, it automatically changes into AR mode. Then set the paper that the PM-Code is printed to fit, so it can be seen on screen.
 
 http://feelsketch.googlecode.com/svn/wiki/images/br_sample01.png
 
-PMCodeをマーカとして認識すれば、ARが表示されます。
+When PM-Code is recognized as a marker the AR will show up.
 
 http://feelsketch.googlecode.com/svn/wiki/images/br_sample02.png
