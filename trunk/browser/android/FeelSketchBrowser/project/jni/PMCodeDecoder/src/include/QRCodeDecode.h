@@ -1,39 +1,53 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef     __QR_CODE_DECODE_H__
 #define     __QR_CODE_DECODE_H__
 
 #include "define.h"
 
-// ------------------------------------------------------------------------- //
-// QRコード複合クラス														 //
-// ------------------------------------------------------------------------- //
 class CQRCodeDecode
 {
-// コンストラクション
 public:
 	CQRCodeDecode ();
 	~CQRCodeDecode ();
 
-	int		SetQRCodeImage (char * szImage, UINT iImageSize, int iVersion);	// QRコードのセット
-	UINT	DecodeQRCodeImage ();											// QRコードのデコード
-	int		GetDecodeData (char *szData, UINT iBufferSize);					// 復号データの取得
+	int		SetQRCodeImage (char * szImage, UINT iImageSize, int iVersion);
+	UINT	DecodeQRCodeImage ();
+	int		GetDecodeData (char *szData, UINT iBufferSize);
 	int		GetQRCodeStatus (int * iRSLevel);
 	int		GetMaskNumber ();
 
 private:
-	void	SetFunctionModule ();											// 機能モジュールの設定
-	void	SetFinderPattern(int x, int y);									// 位置検出パターン
-	void	SetVersionPattern();											// 型番情報の設定
-	void	SetAlignmentPattern(int x, int y);								// 位置合わせパターン配置
+	void	SetFunctionModule ();
+	void	SetFinderPattern(int x, int y);
+	void	SetVersionPattern();
+	void	SetAlignmentPattern(int x, int y);
 
 private:
-	char	*m_QRCodeImage;													// ＱＲコード画像
-	UINT	m_uiQRCodeImageSize;											// ＱＲコード画像サイズ
-	char	*m_szDecodeData;												// 復号データ
-	UINT	m_uiDecodeDataSize;												// 復号データサイズ
-	int		m_iVersion;														// 型番
-	int		m_iSymbolSize;													// シンボルサイズ
-	int		m_iRSLevel;														// 誤り訂正レベル
-	int		m_iMaskPattern;													// マスクパターン
+	char	*m_QRCodeImage;
+	UINT	m_uiQRCodeImageSize;
+	char	*m_szDecodeData;
+	UINT	m_uiDecodeDataSize;
+	int		m_iVersion;
+	int		m_iSymbolSize;
+	int		m_iRSLevel;
+	int		m_iMaskPattern;
 
 };
 #endif

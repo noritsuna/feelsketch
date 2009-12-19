@@ -1,49 +1,43 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "define.h"
 #include "Global.h"
 #include "PMCodeReader.h"
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CPMCodeReader::CPMCodeReader () {
 
 	m_szPMCodeImage = NULL;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CPMCodeReader::~CPMCodeReader () {
 
 }
 
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:復号処理												 //
-// 引数				:なし													 //
-// 戻り値			:復号データサイズ										 //
-// 備考				:復号できなかった場合は、結果が０以下となります			 //
-// ------------------------------------------------------------------------- //
 UINT CPMCodeReader::DecodePMCodeImage () {
 
 	int		DataSize;
 
 	DataSize = DecodePMCode ();
-	return DataSize;														// 復号データサイズを返す
+	return DataSize;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:QRコード画像取得										 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 int CPMCodeReader::GetQRCodeData (char ** szData, UINT *uiImageSize, int *iWidth, int *iHeight, int iLayer) {
 
 	int		iRet;
@@ -55,14 +49,6 @@ int CPMCodeReader::GetQRCodeData (char ** szData, UINT *uiImageSize, int *iWidth
 	return 0;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:復号結果の取得											 //
-// 引数				:szData				:結果格納用バッファ					 //
-//                  :szDataSize			:結果格納用バッファサイズ			 //
-// 戻り値			:RESULT_OK												 //
-//					:RESULT_ERROR_DECODE_YET								 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 int	CPMCodeReader::GetDecodeData (char *szData, int szDataSize) {
 
 	int iRet;
