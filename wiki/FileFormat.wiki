@@ -1,5 +1,9 @@
 #labels Featured,Phase-Design
+<<<<<<< .mine
+#summary Feel Sketch's File Format specification.
+=======
 #Feel Sketch's File Format specification.
+>>>>>>> .r58
 
 = General =
 == endian ==
