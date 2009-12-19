@@ -41,7 +41,7 @@ IplImage* loadPixels(int* pixels, int width, int height)
 	return img;
 }
 
-int Java_jp_co_cia_feelsketch_DecodePMCodeThread_getPMResult( JNIEnv*  env,
+int Java_jp_co_cia_feelsketchbrowser_DecodePMCodeThread_getPMResult( JNIEnv*  env,
                                     jobject  thiz,
 									jintArray src,
 									jint width,
@@ -54,7 +54,7 @@ int Java_jp_co_cia_feelsketch_DecodePMCodeThread_getPMResult( JNIEnv*  env,
 {
 	LOG_FUNC_START;
   	jboolean b;
-  	int x, y, i, j;
+  	int x, y, i, j, error;
   	int* pixels = (env)->GetIntArrayElements(src, &b);
 	char result_data[4096];
 	memset (result_data, '\0', 4096);
@@ -98,7 +98,7 @@ int Java_jp_co_cia_feelsketch_DecodePMCodeThread_getPMResult( JNIEnv*  env,
     // detect module coordinate by zxing
 	Ref<MonochromeBitmapSource> imageSrc(new GrayBytesMonochromeBitmapSource((unsigned char *)grey_image->imageData, grey_image->width, grey_image->height, grey_image->widthStep));
 	qrcode::detector::Detector detector(imageSrc);
-	if (detector.detect() == 0) {
+	if ((error = detector.detect()) == 0) {
 		Ref<DetectorResult> detectorResult(detector.getResult());
 		Ref<PointMatrix> points(detectorResult->getPoints());
 		int dimension = points->getDimension();
@@ -117,19 +117,17 @@ int Java_jp_co_cia_feelsketch_DecodePMCodeThread_getPMResult( JNIEnv*  env,
 		}
 
 		Decoder decoder;
-		int error_code = decoder.decode(data, size, dimension, result_data, result_ext, result_reserve, &result_data_size, base_color, layer_count);
-		sprintf(msg, "decode result = %d", error_code);
+		error = decoder.decode(data, size, dimension, result_data, result_ext, result_reserve, &result_data_size, base_color, layer_count);
+		sprintf(msg, "decode result = %d", error);
 		LOG_FUNC_MESSAGE(msg);
-		if (error_code != 0) {
-			sprintf(result_data, "decode error.\nerror code: %d", error_code);
+		if (error != 0) {
+			sprintf(result_data, "decode error.\nerror code: %d", error);
 			result_data_size = strlen(result_data);
-			return -1;
 		}
 		free(data);
 	} else {
 		sprintf(result_data, "detect error.");
 		result_data_size = strlen(result_data);
-		return -1;
 	}
     
     cvReleaseImage(& load_image);
@@ -152,10 +150,10 @@ int Java_jp_co_cia_feelsketch_DecodePMCodeThread_getPMResult( JNIEnv*  env,
 	fieldID = env->GetFieldID(pmResultClass, "title", "Ljava/lang/String;");
   	env->SetObjectField(pmResult, fieldID, (jobject)reserve_str);
 
-  	return 0;
+  	return error;
 }
 
-jintArray Java_jp_co_cia_feelsketch_Preview_getRect( JNIEnv*  env,
+jintArray Java_jp_co_cia_feelsketchbrowser_Preview_getRect( JNIEnv*  env,
                                     jobject  thiz,
 									jintArray src,
 									jint width,
@@ -217,7 +215,7 @@ jintArray Java_jp_co_cia_feelsketch_Preview_getRect( JNIEnv*  env,
 	return result;
 }
 
-void Java_jp_co_cia_feelsketch_Preview_getFSResult( JNIEnv* env,
+void Java_jp_co_cia_feelsketchbrowser_Preview_getFSResult( JNIEnv* env,
 									jobject thiz,
 									jbyteArray fsData,
 									jint fsDataSize,

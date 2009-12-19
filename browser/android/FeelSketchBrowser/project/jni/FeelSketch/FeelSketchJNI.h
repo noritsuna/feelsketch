@@ -36,7 +36,7 @@
 extern "C" {
 #endif
 
-jint Java_jp_co_cia_feelsketch_DecodePMCodeThread_getPMResult( JNIEnv*  env,
+jint Java_jp_co_cia_feelsketchbrowser_DecodePMCodeThread_getPMResult( JNIEnv*  env,
                                     jobject  thiz,
 									jintArray src,
 									jint width,
@@ -47,7 +47,7 @@ jint Java_jp_co_cia_feelsketch_DecodePMCodeThread_getPMResult( JNIEnv*  env,
 									jobject pmResult,
 									jobject colorSettings);
 
-jintArray Java_jp_co_cia_feelsketch_Preview_getRect( JNIEnv*  env,
+jintArray Java_jp_co_cia_feelsketchbrowser_Preview_getRect( JNIEnv*  env,
                                     jobject  thiz,
 									jintArray src,
 									jint width,
@@ -56,7 +56,7 @@ jintArray Java_jp_co_cia_feelsketch_Preview_getRect( JNIEnv*  env,
 									jint pmCodePos,
 									jint paperSize);
 
-void Java_jp_co_cia_feelsketch_Preview_getFSResult( JNIEnv* env,
+void Java_jp_co_cia_feelsketchbrowser_Preview_getFSResult( JNIEnv* env,
 									jobject thiz,
 									jbyteArray fsData,
 									jint fsDataSize,
