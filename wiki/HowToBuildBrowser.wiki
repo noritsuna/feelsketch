@@ -1,5 +1,5 @@
 #summary Android　How to build AR Browse for Android
-#labels Featured
+#labels Featured,Phase-Deploy,Phase-Implementation
 
 =　Preparing for the environment =
 
