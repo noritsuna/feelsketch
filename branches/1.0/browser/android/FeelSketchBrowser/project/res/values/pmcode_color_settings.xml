@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+	<color name="layer1_of_3layers">#F00</color>
+	<color name="layer2_of_3layers">#0F0</color>
+	<color name="layer3_of_3layers">#00F</color>
+	<color name="layer1_of_4layers">#A00</color>
+	<color name="layer2_of_4layers">#0F0</color>
+	<color name="layer3_of_4layers">#00F</color>
+	<color name="layer4_of_4layers">#500</color>
+</resources>
