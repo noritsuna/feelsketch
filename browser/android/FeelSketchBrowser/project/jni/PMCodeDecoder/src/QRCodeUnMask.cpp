@@ -1,38 +1,33 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "QRCodeUnMask.h"
 #include "define.h"
 #include "global.h"
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeUnMask::CQRCodeUnMask () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeUnMask::~CQRCodeUnMask () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:マスク処理												 //
-// 引数				:szImage			:ＱＲ画像データ						 //
-//					:iImageSize			:画像サイズ							 //
-//					:iMaskPattern		:マスクパターン						 //
-//					:byModuleData		:機能モジュールデータ				 //
-//					:iVersion			:型番								 //
-// 戻り値			:なし													 //
-// 備考				:画像を保持する必要が無い為、本関数にて解析を行います	 //
-//					:呼び出し元で画像サイズとシンボルサイズのチェックを行う！//
-// ------------------------------------------------------------------------- //
 void CQRCodeUnMask::GetUnMaskQRCode (char * szImage, UINT iImageSize, int iMaskPattern, int iVersion) {
 	
 	int		iLineLength;
@@ -42,7 +37,6 @@ void CQRCodeUnMask::GetUnMaskQRCode (char * szImage, UINT iImageSize, int iMaskP
 	
 	for (int i = 0; i < iSymbleSize; i ++) {
 		for (int j = 0; j < iSymbleSize; j ++) {
-			// 機能モジュールを除外
 			if (! (g_byModuleData[j][i] & 0x20)) {
 				BOOL bMask;
 
@@ -79,7 +73,6 @@ void CQRCodeUnMask::GetUnMaskQRCode (char * szImage, UINT iImageSize, int iMaskP
 					bMask = ((((i * j) % 3) + ((i + j) % 2)) % 2 == 0);
 					break;
 				}
-				// マスク解除
 				szImage[(((iSymbleSize - 1) - i) * iLineLength) + j] = (char)(szImage[(((iSymbleSize - 1) - i) * iLineLength) + j] ^ bMask);
 			}
 		}

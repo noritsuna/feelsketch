@@ -1,52 +1,45 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "QRCodeDisposition.h"
 #include "global.h"
 #include "define.h"
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeDisposition::CQRCodeDisposition () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeDisposition::~CQRCodeDisposition () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:画像データセット										 //
-// 引数				:szData				:データ								 //
-//					:uiDataSize			:サイズ								 //
-//					:iWordSize			:コード内データサイズ				 //
-//					:iSymbolSize		:シンボルサイズ						 //
-//					:iRSLevel			:誤り訂正レベル						 //
-// 戻り値			:RESULT_OK												 //
-//					:RESULT_ERROR_SECURE_MEMORY								 //
-// 備考				:画像を保持する必要が無い為、本関数にて解析を行います	 //
-//					:データ取得失敗の場合、０を返します。					 //
-// ------------------------------------------------------------------------- //
 int CQRCodeDisposition::SetCodeWordPattern (char * szData, int iDataSize
 											, int iWordSize, int iSymbolSize, int iRSLevel) {
 
-    int iX			= iSymbolSize;											// ＱＲコードの右下から開始する
-    int iY			= iSymbolSize - 1;										// ＱＲコードの右下から開始する
-    int iDirectionX = 1;													// ｘ軸配置向き
-    int iDirectionY = 1;													// ｙ軸配置向き
+    int iX			= iSymbolSize;
+    int iY			= iSymbolSize - 1;
+    int iDirectionX = 1;
+    int iDirectionY = 1;
 
-	if (iDataSize > iWordSize) {											// データサイズが格納サイズ以上の場合はエラーとする
+	if (iDataSize > iWordSize) {
 		return 0;
 	}
 
-// データ取得処理
     for (int i = 0; i < iWordSize; i ++ ){
         for (int j = 0; j < 8; j ++) {
             do {
@@ -66,11 +59,10 @@ int CQRCodeDisposition::SetCodeWordPattern (char * szData, int iDataSize
 
 						iX -= 2;
 
-						if (iX == 6) // タイミングパターン
+						if (iX == 6)
 							iX -= 1;
 					}
 				}
-			// 機能モジュールはデータから除外する
             } while (g_byModuleData[iX][iY] & 0x20);
 			g_byModuleData[iX][iY] = (szData[i] & (1 << (7 - j))) ? '\x02' : '\x00';
         }
