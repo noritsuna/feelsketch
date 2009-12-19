@@ -1,4 +1,6 @@
-#Feel Sketch's File Format specification.
+#labels Featured,Phase-Design
+# Feel Sketch's File Format specification.
+
 
 = General =
 == endian ==
@@ -209,7 +211,7 @@
 
 == line next ==
 {{{
-|point(2-xy)| ・・・・ |terminal|
+|point(2-xy)|" is used for "|terminal|
 }}}
 
 * Last "| point 2-xy|" is used for "| point 1-xy|." 
@@ -478,4 +480,3 @@
    | command : 255 |     255       |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 }}}
-
