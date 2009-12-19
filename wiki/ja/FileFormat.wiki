@@ -1,3 +1,6 @@
+#Feel Sketchのファイルフォーマットの仕様
+
+
 = 全体 =
 == エンディアン ==
 * ビックエンディアン
@@ -203,8 +206,7 @@
 = 構造 =
 == ヘッダ ==
 {{{
-|Version|画像サイズ|PM-Codeサイズ|PM-Code場所|用紙サイズ|背景コード
-|UUID|Reserved|
+|Version|画像サイズ|PM-Codeサイズ|PM-Code場所|用紙サイズ|背景コード|UUID|Reserved|
 }}}
 
 
