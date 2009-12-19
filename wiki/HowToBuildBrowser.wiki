@@ -1,4 +1,5 @@
-#summary Android　How to build AR Browse for Android 
+#summary Android　How to build AR Browse for Android
+#labels Featured
 
 =　Preparing for the environment =
 
