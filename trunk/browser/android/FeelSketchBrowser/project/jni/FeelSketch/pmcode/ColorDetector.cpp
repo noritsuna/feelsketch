@@ -65,10 +65,6 @@ void ColorDetector::detect(unsigned char *resultData) {
 	// get base colors from PM code header.
 	CvScalar* baseColors = (CvScalar*)malloc(sizeof(CvScalar)*mColorNum);
 	getBaseColors(baseColors);
-	for (int i = 0; i < mColorNum; i++) {
-		sprintf(msg, "%d: (%f, %f, %f)", i, baseColors[i].val[0], baseColors[i].val[1], baseColors[i].val[2]);
-		LOG_FUNC_MESSAGE(msg);
-	}
 
 	int index = 0;
 	int dimension = mColorMatrix.getDimension();

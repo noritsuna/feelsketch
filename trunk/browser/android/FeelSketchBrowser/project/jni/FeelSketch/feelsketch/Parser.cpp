@@ -142,7 +142,7 @@ int Parser::parseBody(FSResult* fsResult) {
 				y = fsDataStream.get();
 				p2 = calculatePoint(x, y);
 				drawer.drawLine(p1, p2, color, LINE_THICKNESS[lineType]);
-				while(1) {
+				while(fsDataStream.good()) {
 					if ((x = fsDataStream.get()) != TERMINAL) {
 						p1 = p2;
 						y = fsDataStream.get();
@@ -166,12 +166,8 @@ int Parser::parseBody(FSResult* fsResult) {
 					y = fsDataStream.get();
 					b[i] = calculatePoint(x, y);
 				}
-				sprintf(msg, "color = %d", colorCode);
-				LOG_FUNC_MESSAGE(msg);
-				sprintf(msg, "bezier = { (%d, %d), (%d, %d), (%d, %d), (%d, %d) }", b[0].x, b[0].y, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);
-				LOG_FUNC_MESSAGE(msg);
 				drawer.drawBezier(b, color, LINE_THICKNESS[lineType]);
-				while(1) {
+				while(fsDataStream.good()) {
 					if ((x = fsDataStream.get()) != TERMINAL) {
 						b[0] = b[3];
 						y = fsDataStream.get();
@@ -181,21 +177,8 @@ int Parser::parseBody(FSResult* fsResult) {
 							y = fsDataStream.get();
 							b[i] = calculatePoint(x, y);
 						}
-						sprintf(msg, "bezier = { (%d, %d), (%d, %d), (%d, %d), (%d, %d) }", b[0].x, b[0].y, b[1].x, b[1].y, b[2].x, b[2].y, b[3].x, b[3].y);
-						LOG_FUNC_MESSAGE(msg);
 						drawer.drawBezier(b, color, LINE_THICKNESS[lineType]);
 					} else {
-						if (fsDataStream.get() == TERMINAL) {
-							break;
-						} else {
-							return -1;
-						}
-					}
-				}
-				break;
-			case SPLINE:
-				while(1) {
-					if (fsDataStream.get() == TERMINAL) {
 						if (fsDataStream.get() == TERMINAL) {
 							break;
 						} else {
