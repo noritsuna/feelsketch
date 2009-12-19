@@ -1,6 +1,5 @@
 #labels Featured,Phase-Design
-# Feel Sketch's File Format specification.
-
+#Feel Sketch's File Format specification.
 
 = General =
 == endian ==
