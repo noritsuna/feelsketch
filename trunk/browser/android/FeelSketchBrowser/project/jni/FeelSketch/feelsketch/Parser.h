@@ -22,7 +22,7 @@ struct FSResult {
 	int reserved;
 	char uuid[16];
 	char mediaData[1024];
-	int* imageData[4];
+	int* imageData;
 };
 
 class Parser {

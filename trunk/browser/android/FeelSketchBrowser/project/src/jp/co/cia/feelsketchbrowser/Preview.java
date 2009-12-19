@@ -229,10 +229,11 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback, Runnable {
               	  
                     int result[] = getRect(rgb, size.width, size.height, mFSResult.pmcodeSize, mFSResult.pmcodePos, mFSResult.paperSize);
                     rgb = null;
-                    Log.i(TAG, "rect : (" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ")");
+                    Log.i(TAG, "mRect : (" + result[0] + ", " + result[1] + ", " + result[2] + ", " + result[3] + ")");
                     if (result[0] != 0 || mAutofocusCount == 5) {
                     	mAutofocusCount = 0;
                     	mOverlayView.setRect(new Rect(result[0], result[1], result[2], result[3]));
+                    	mOverlayView.postInvalidate();
                     } else {
                     	mAutofocusCount++;
                     }
@@ -272,16 +273,12 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     		if ("fs".equals(mPMResult.extension)) {
         		int width = getWidth();
         		int height = getHeight();
-                Log.i("PMCode", "width : " + width + ", height : " + height);
+                Log.i("PMCode", "mWidth : " + width + ", mHeight : " + height);
         		mFSResult = new FSResult();
         		getFSResult(mPMResult.data, mPMResult.data.length, mFSResult, width, height);
-        		Bitmap[] bitmaps = new Bitmap[4];
-        		for (int i = 0; i < 4; i++) {
-        			int[] image = mFSResult.imageData[i];
-        			bitmaps[i] = Bitmap.createBitmap(image, width, height, Config.ARGB_8888);
-        		}
-        		mOverlayView.setImages(bitmaps);
-        		mOverlayView.startAnimation();
+       			int[] image = mFSResult.imageData;
+       			Bitmap bitmap = Bitmap.createBitmap(image, width, height, Config.ARGB_8888);
+        		mOverlayView.setImage(bitmap);
 
             	mFSBrowser.hideShutterButton();
         		requestPreview(true);
@@ -301,7 +298,7 @@ class Preview extends SurfaceView implements SurfaceHolder.Callback, Runnable {
                 Log.i(TAG, "onAutoFocus");
                 camera.autoFocus(null);
                 if (mIsOverlay) {
-                	// get preview image and get AR marker
+                	// get preview mImage and get AR marker
                 	requestPreview(true);
                 } else if (success){
                 	takePicture();

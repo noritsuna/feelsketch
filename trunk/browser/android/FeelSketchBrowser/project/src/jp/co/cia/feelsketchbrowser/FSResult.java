@@ -22,5 +22,5 @@ public class FSResult {
 	public int pmcodePos;
 	public int pmcodeSize;
 	public int paperSize;
-	public int[][] imageData;
+	public int[] imageData;
 }
