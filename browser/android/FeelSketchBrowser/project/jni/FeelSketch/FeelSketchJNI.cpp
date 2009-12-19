@@ -242,16 +242,11 @@ void Java_jp_co_cia_feelsketchbrowser_Preview_getFSResult( JNIEnv* env,
 
 	jfieldID fieldID;
 
-	jclass cls = (env)->FindClass("java/lang/Object");
-	jobjectArray imageDataArr = env->NewObjectArray(4, cls, NULL);
-	for (i = 0; i < 4; i++) {
-		jintArray imageData = (env)->NewIntArray(length);
-		(env)->SetIntArrayRegion(imageData, 0, length, fsResult->imageData[i]);
-		(env)->SetObjectArrayElement(imageDataArr, i, imageData);
-	}
+	jintArray imageData = (env)->NewIntArray(length);
+	(env)->SetIntArrayRegion(imageData, 0, length, fsResult->imageData);
   	jclass jfsResultClass = env->GetObjectClass(jfsResult);
-  	fieldID = env->GetFieldID(jfsResultClass, "imageData", "[[I");
-  	env->SetObjectField(jfsResult, fieldID, imageDataArr);
+  	fieldID = env->GetFieldID(jfsResultClass, "imageData", "[I");
+  	env->SetObjectField(jfsResult, fieldID, imageData);
 
   	fieldID = env->GetFieldID(jfsResultClass, "pmcodePos", "I");
   	env->SetIntField(jfsResult, fieldID, (jint)fsResult->pmcodePos);

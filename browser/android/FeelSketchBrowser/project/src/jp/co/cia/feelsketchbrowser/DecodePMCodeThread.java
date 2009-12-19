@@ -53,7 +53,7 @@ public class DecodePMCodeThread extends Thread
         int rectSize = 
             ((mImageSize.width < mImageSize.height) ? 
                 mImageSize.width : mImageSize.height);
-        Log.i(TAG, "takePicture: width=" + mImageSize.width + ", height=" + mImageSize.height + ", rectSize=" + rectSize + ", data.length=" + mImageData.length);
+        Log.i(TAG, "takePicture: mWidth=" + mImageSize.width + ", mHeight=" + mImageSize.height + ", rectSize=" + rectSize + ", data.length=" + mImageData.length);
         int leftOffset = (mImageSize.width - rectSize) / 2;
         int topOffset = (mImageSize.height - rectSize) / 2;
   	  

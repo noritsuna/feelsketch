@@ -192,10 +192,7 @@ int Parser::parseBody(FSResult* fsResult) {
 		}
 	}
 
-	fsResult->imageData[0] = pixelsFromIplImage(image);
-	fsResult->imageData[1] = pixelsFromIplImage(image);
-	fsResult->imageData[2] = pixelsFromIplImage(image);
-	fsResult->imageData[3] = pixelsFromIplImage(image);
+	fsResult->imageData = pixelsFromIplImage(image);
     cvReleaseImage(& image);
 
     return 0;

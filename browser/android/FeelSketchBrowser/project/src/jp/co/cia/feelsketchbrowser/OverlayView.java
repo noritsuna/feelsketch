@@ -17,61 +17,31 @@
 */
 
 package jp.co.cia.feelsketchbrowser;
-
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.content.Context;
-//import android.content.res.Resources;
 import android.graphics.Bitmap;
-//import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.view.View;
 
 public class OverlayView extends View {
-    Bitmap images[];
-    Rect rect;
-    Timer timer;
-    int width;
-    int height;
-    int imageNum;
-    final static int ANIMATION_PERIOD = 300;
+    Bitmap mImage;
+    Rect mRect;
+    int mWidth;
+    int mHeight;
 
     public OverlayView(Context c)
     {
         super(c);
-        rect = new Rect(0, 0, 0, 0);
+        mRect = new Rect(0, 0, 0, 0);
     }
     
     public void setRect(Rect r) {
-    	rect = new Rect(r);
+    	mRect = new Rect(r);
     }
     
-    public void setImages(Bitmap[] imgs) {
-    	images = imgs;
-    }
-    
-    public void startAnimation() {
-    	imageNum = 0;
-    	timer = new Timer(true);
-        final android.os.Handler handler = new android.os.Handler();
-        timer.schedule(
-        	new TimerTask() {
-        		@Override
-        		public void run() {
-        			handler.post( new Runnable(){
-        				public void run(){
-        					invalidate();
-        					imageNum++;
-        					if (imageNum == 4) {
-        						imageNum = 0;
-        					}
-        				}
-        			});
-        		}
-        	}, 0, ANIMATION_PERIOD);
+    public void setImage(Bitmap img) {
+    	mImage = img;
     }
     
     protected void onDraw(Canvas canvas)
@@ -80,8 +50,8 @@ public class OverlayView extends View {
         
         canvas.drawColor(Color.TRANSPARENT);
         
-        if (rect.right != 0) {
-        	canvas.drawBitmap(images[imageNum], null, rect, null);
+        if (mRect.right != 0) {
+        	canvas.drawBitmap(mImage, null, mRect, null);
         }
     }
 }
