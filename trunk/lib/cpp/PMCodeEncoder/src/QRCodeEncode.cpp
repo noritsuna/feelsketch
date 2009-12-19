@@ -1,35 +1,38 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "QRCodeEncode.h"
 #include "QRCodeMask.h"
 #include "QRCodeSymbol.h"
 #include "QRCodeDisposition.h"
 #include "global.h"
-//#include "CtrlBMP.h"
 #include "define.h"
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeEncode::CQRCodeEncode () {
 
-	// 初期化
 	m_QRCodeImage		= NULL;
 	m_uiQRCodeImageSize	= 0;
 	m_szEncodeData		= NULL;
 	m_uiEncodeDataSize	= 0;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeEncode::~CQRCodeEncode () {
 
-	// メモリの開放
 	if (m_QRCodeImage != NULL) {
 		free (m_QRCodeImage);
 		m_QRCodeImage = NULL;
@@ -42,100 +45,64 @@ CQRCodeEncode::~CQRCodeEncode () {
 	}
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:QRコード情報のセット									 //
-// 引数				:szData				:データ								 //
-//					:iDataSize			:データサイズ						 //
-//					:iVersion			:型番								 //
-//					:iRSLevel			:誤り訂正レベル						 //
-//					:iMaskPattern		:マスクパターン						 //
-// 戻り値			:RESULT_OK												 //
-//					:RESULT_ERROR_SECURE_MEMORY								 //
-// 備考				:本来、ＱＲコードの分割データ＆誤り訂正処理はＱＲコード	 //
-//					:だが、層の分割があるため、ＰＭコードクラス側で行う		 //
-// ------------------------------------------------------------------------- //
 int	CQRCodeEncode::SetQRCodeData (char * szData, UINT iDataSize, int iVersion, int iRSLevel, int iMaskPattern) {
 
 	int iSymbolSize;
 	int iWidthLength;
 	int iImageSize;
 
-	iSymbolSize		= VER2SYM (iVersion);										// 型番に対するシンボルサイズ計算
-	iWidthLength	= CalcPitch (BIT_COUNT_8, iSymbolSize);						// 画像横幅サイズの計算
-	iImageSize		= iSymbolSize * iWidthLength;								// 画像サイズの計算
+	iSymbolSize		= VER2SYM (iVersion);
+	iWidthLength	= CalcPitch (BIT_COUNT_8, iSymbolSize);
+	iImageSize		= iSymbolSize * iWidthLength;
 
-	// メモリが既に確保されている場合は、再確保しない（サイズは同一のため）
 	if ((int)m_uiQRCodeImageSize != iImageSize + 1) {
 		m_uiQRCodeImageSize = iImageSize + 1;
-		m_QRCodeImage = (char *)malloc (m_uiQRCodeImageSize);					// 画像データ用メモリの確保
-		if (m_QRCodeImage == NULL) {											// メモリ確保失敗
+		m_QRCodeImage = (char *)malloc (m_uiQRCodeImageSize);
+		if (m_QRCodeImage == NULL) {
 			return RESULT_ERROR_SECURE_MEMORY;
 		} 
 	}
-	memset (m_QRCodeImage, '\0', m_uiQRCodeImageSize);							// 画像メモリの初期化
+	memset (m_QRCodeImage, '\0', m_uiQRCodeImageSize);
 
 	m_uiEncodeDataSize = iDataSize;
-	m_szEncodeData = (char *)realloc (m_szEncodeData, m_uiEncodeDataSize + 1);	// データ用メモリの確保
-	if (m_szEncodeData == NULL) {												// メモリ確保失敗
+	m_szEncodeData = (char *)realloc (m_szEncodeData, m_uiEncodeDataSize + 1);
+	if (m_szEncodeData == NULL) {
 		return RESULT_ERROR_SECURE_MEMORY;
 	} 
-	memset (m_szEncodeData, '\0', m_uiEncodeDataSize + 1);						// データバッファの初期化
-	memcpy (m_szEncodeData, szData, m_uiEncodeDataSize);						// データの格納
+	memset (m_szEncodeData, '\0', m_uiEncodeDataSize + 1);
+	memcpy (m_szEncodeData, szData, m_uiEncodeDataSize);
 
-	m_iVersion		= iVersion;													// 型番のセット
-	m_iRSLevel		= iRSLevel;													// 誤り訂正レベルのセット
-	m_iMaskPattern	= iMaskPattern;												// マスクパターンのセット
+	m_iVersion		= iVersion;
+	m_iRSLevel		= iRSLevel;
+	m_iMaskPattern	= iMaskPattern;
 	m_iSymbolSize	= iSymbolSize;
 	return RESULT_OK;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:QRコードのエンコード									 //
-// 引数				:なし													 //
-// 戻り値			:QRコード画像データサイズ								 //
-// 備考				:エンコードできなかった場合は、結果が０となります		 //
-//					:単層用に分解・誤り訂正設定処理は呼び出し元にて行います  //
-// ------------------------------------------------------------------------- //
 UINT CQRCodeEncode::EncodeQRCode () {
 
 	int						iRet;
-	int						iMinPenalty = 0;									// 最小失点数
-	int						iPenalty	= 0;									// 失点数
-	int						iWidthLength;										// 横サイズ
+	int						iMinPenalty = 0;
+	int						iPenalty	= 0;
+	int						iWidthLength;
 	int						iWordSize;
-	CQRCodeSymbol			*pSymbol;											// シンボルクラス
-	CQRCodeMask				*pMask;												// マスククラス
-	CQRCodeDisposition		*pDisposition;										// データ取得・復号クラス
+	CQRCodeSymbol			*pSymbol;
+	CQRCodeMask				*pMask;
+	CQRCodeDisposition		*pDisposition;
 
-	SetFunctionModule ();														// 機能モジュールの設定
+	SetFunctionModule ();
 
-// データのセット	
 	pDisposition = new CQRCodeDisposition;
-	// 2006/11/27 色識別コード拡張
-// 2006/12/27 誤り訂正に対応する為に、テーブル数を変更
 	iWordSize = QR_VersonInfo[m_iVersion].ncAllCodeWord;
-/*
-	if (m_iVersion < 3) {
-		iWordSize = QR_VersonInfo[m_iVersion].ncAllCodeWord;
-	} else {
-		iWordSize = QR_VersonInfo[m_iVersion].ncAllCodeWord - 6;
-	}
-*/
 	iRet = pDisposition->SetCodeWordPattern (m_szEncodeData, m_uiEncodeDataSize
 								, iWordSize
-								, m_iSymbolSize, m_iRSLevel);					// データのセット
-//	iRet = pDisposition->SetCodeWordPattern (m_szEncodeData, m_uiEncodeDataSize
-//								, QR_VersonInfo[m_iVersion].ncAllCodeWord
-//								, m_iSymbolSize, m_iRSLevel);					// データのセット
+								, m_iSymbolSize, m_iRSLevel);
 	delete pDisposition;
 	if(RESULT_OK != iRet){
 		return 0;
 	}
-// マスク処理（マスク処理の成否判定ができないため、戻り値やチェックはなし）
 	pMask = new CQRCodeMask;
-	if (m_iMaskPattern == -1) {													// マスクパターンが自動の場合
-		// 最適マスキングパターン選択
-		// マスク０～７までマスクを行い、失点数の少ないマスクコードを採用する
+	if (m_iMaskPattern == -1) {
 		m_iMaskPattern = MIN_MASK_NUMBER;
 		pMask->SetMaskQRCode (m_iMaskPattern, m_iVersion);
 		iMinPenalty = CountPenalty();
@@ -154,103 +121,60 @@ UINT CQRCodeEncode::EncodeQRCode () {
 	}
 	delete pMask;
 
-// 型式/型番の設定
 	pSymbol = new CQRCodeSymbol;
 	iRet = pSymbol->SetQRCodeSymbol (m_iSymbolSize, m_iRSLevel, m_iMaskPattern);
-																				// 型式の取得
 	delete pSymbol;
 	if(RESULT_OK != iRet){
 		return 0;
 	}
-// ＱＲコード画像を作成する
-	iWidthLength = CalcPitch (BIT_COUNT_8, m_iSymbolSize);						// 画像横幅サイズの計算
+	iWidthLength = CalcPitch (BIT_COUNT_8, m_iSymbolSize);
 	for (int i = 0; i < m_iSymbolSize; i ++) {
 		for (int j = 0; j < m_iSymbolSize; j ++) {
-			// ＢＭＰ画像は４の倍数でないといけないため、シンボルサイズが４の倍数でない場合
-			// 穴埋めする必要がある。（あらかじめ初期化を行っているため、処理を飛ばすだけでＯＫ）
-// 2006/10/13 tsato update ----------------------------------------------
-// ＱＲコード画像を左下から右上に向かって格納する様に変更
 			m_QRCodeImage [(i * iWidthLength) + j] = (BYTE)((g_byModuleData[j][m_iSymbolSize - (i + 1)] & 0x11) != 0);
-//			m_QRCodeImage [(i * iWidthLength) + j] = (BYTE)((g_byModuleData[j][i] & 0x11) != 0);
-// ----------------------------------------------------------------------
 		}
 	}
 	return m_uiQRCodeImageSize;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:QRコード画像の取得										 //
-// 引数				:szImage			:ＱＲコード画像バッファ				 //
-//                  :iBufferSize		:ＱＲコード画像サイズ				 //
-// 戻り値			:RESULT_OK												 //
-//					:RESULT_ERROR_ENCODE_YET								 //
-// 備考				:画像データ＞画像バッファの場合はエラーの方が良いかも	 //
-// ------------------------------------------------------------------------- //
 int	CQRCodeEncode::GetQRCodeImage (char *szImage, UINT iBufferSize) {
 
-	// ＱＲコード画像あり
 	if (m_QRCodeImage != NULL && m_uiQRCodeImageSize != 0) {
-		// 画像データがバッファに収まるなら、画像データ分だけセットする
 		if (iBufferSize >= m_uiQRCodeImageSize) {
 			memcpy (szImage, m_QRCodeImage, m_uiQRCodeImageSize);
-		// データバッファサイズがデータより小さい場合は、バッファサイズ分セットする
 		} else {
 			memcpy (szImage, m_QRCodeImage, iBufferSize);
 		}
 	} else {
-		return RESULT_ERROR_ENCODE_YET;										// 暗号化未完了
+		return RESULT_ERROR_ENCODE_YET;
 	}
-	return RESULT_OK;														// 処理完了
+	return RESULT_OK;
 }
 
-// ------------------------------------------------------------------------- //
-// --------------------------- 以下private 関数 ---------------------------- //
-// ------------------------------------------------------------------------- //
-
-// ------------------------------------------------------------------------- //
-// 機能概要			:機能コードの設定										 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:機能モジュールの初期化を行い、機能コードの設定をします	 //
-//					:本関数の処理はＱＲコード作成ツールを参考にしています	 //
-// ------------------------------------------------------------------------- //
 void CQRCodeEncode::SetFunctionModule () {
 
-	memset (g_byModuleData, '\0', sizeof (g_byModuleData));						// 単層モジュールの初期化
+	memset (g_byModuleData, '\0', sizeof (g_byModuleData));
 
-	// 位置検出パターンの設定
 	SetFinderPattern(0, 0);
 	SetFinderPattern(m_iSymbolSize - 7, 0);
 	SetFinderPattern(0, m_iSymbolSize - 7);
 
-	// 位置検出パターンセパレータ
 	for (int i = 0; i < 8; i ++) {
 		g_byModuleData[i][7]					= g_byModuleData[7][i] = '\x20';
 		g_byModuleData[m_iSymbolSize - 8][i]	= g_byModuleData[m_iSymbolSize - 8 + i][7] = '\x20';
 		g_byModuleData[i][m_iSymbolSize - 8]	= g_byModuleData[7][m_iSymbolSize - 8 + i] = '\x20';
 	}
 
-	// フォーマット情報記述位置を機能モジュール部として登録
 	for (int i = 0; i < 9; i ++) {
-		// 　左上横　　　　　　　	左下縦
 		g_byModuleData[i][8] = g_byModuleData[8][i] = '\x20';
 	}
 
 	for (int i = 0; i < 8; i ++) {
-		//		右上横　　　　　　　　　　　　　　　　　　　　　左下縦
 		g_byModuleData[m_iSymbolSize - 8 + i][8] = g_byModuleData[8][m_iSymbolSize - 8 + i] = '\x20';
 	}
 
-// -----------------------------------------------------------------------------------------
-// 2007/01/05 型番コードを使用しない様対応
-	// バージョン情報パターン
-//	SetVersionPattern();
-// -----------------------------------------------------------------------------------------
-
-	// 位置合わせパターン
 	for (int i = 0; i < QR_VersonInfo[m_iVersion].ncAlignPoint; i ++) {
-		SetAlignmentPattern(QR_VersonInfo[m_iVersion].nAlignPoint[i], 6);		// 右上
-		SetAlignmentPattern(6, QR_VersonInfo[m_iVersion].nAlignPoint[i]);		// 左下
+		SetAlignmentPattern(QR_VersonInfo[m_iVersion].nAlignPoint[i], 6);
+		SetAlignmentPattern(6, QR_VersonInfo[m_iVersion].nAlignPoint[i]);
 
 		for (int j = 0; j < QR_VersonInfo[m_iVersion].ncAlignPoint; j ++) {
 			SetAlignmentPattern(QR_VersonInfo[m_iVersion].nAlignPoint[i]
@@ -258,13 +182,11 @@ void CQRCodeEncode::SetFunctionModule () {
 		}
 	}
 
-	// タイミングパターン
 	for (int i = 8; i <= m_iSymbolSize - 9; i ++) {
 		g_byModuleData[i][6] = (i % 2) == 0 ? '\x30' : '\x20';
 		g_byModuleData[6][i] = (i % 2) == 0 ? '\x30' : '\x20';
 	}
 
-	// ＰＭコード用識別情報　ＱＲコードとしては、機能モジュールとして設定するだけ（上位処理にて設定する）
 #if 0
 	for (int i = 0; i <= 5; i ++) {
 		for (int j = 9; j <= 12; j ++) {
@@ -272,7 +194,7 @@ void CQRCodeEncode::SetFunctionModule () {
 		}
 	}
 #else
-	// 2006/11/27 色識別コードのサイズを層数により変化させる
+
 	int iEnd;
 
 	if (m_iVersion < 3){
@@ -288,13 +210,6 @@ void CQRCodeEncode::SetFunctionModule () {
 #endif
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:機能コードの設定										 //
-// 引数				:左下隅Ｘ座標											 //
-//					:左下隅Ｙ座標											 //
-// 戻り値			:なし													 //
-// 備考				:機能モジュールの初期化を行い、機能コードの設定をします	 //
-// ------------------------------------------------------------------------- //
 void CQRCodeEncode::SetFinderPattern(int x, int y) {
 
 	static BYTE byPattern[] = {0x7f,  // 1111111b
@@ -312,23 +227,15 @@ void CQRCodeEncode::SetFinderPattern(int x, int y) {
 	}
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:バージョン(型番)情報パターン配置						 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:機能モジュールの初期化を行い、機能コードの設定をします	 //
-// ------------------------------------------------------------------------- //
 void CQRCodeEncode::SetVersionPattern() {
 
 	int iVerData;
 
-	// ６型以下はバージョン情報が無いのでそのまま返す
 	if (m_iVersion <= 6) {
 		return;
 	}
 	iVerData = m_iVersion << 12;
 
-	// 剰余ビット算出
 	for (int i = 0; i < 6; i ++) {
 		if (iVerData & (1 << (17 - i)))	{
 			iVerData ^= (0x1f25 << (5 - i));
@@ -343,13 +250,6 @@ void CQRCodeEncode::SetVersionPattern() {
 	}
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:位置合わせパターンの設定								 //
-// 引数				:配置中央Ｘ座標											 //
-//					:配置中央Ｙ座標											 //
-// 戻り値			:なし													 //
-// 備考				:機能モジュールの初期化を行い、機能コードの設定をします	 //
-// ------------------------------------------------------------------------- //
 void CQRCodeEncode::SetAlignmentPattern(int x, int y) {
 
 	static BYTE byPattern[] = {0x1f,  // 11111b
@@ -359,9 +259,9 @@ void CQRCodeEncode::SetAlignmentPattern(int x, int y) {
 							   0x1f}; // 11111b
 
 	if (g_byModuleData[x][y] & 0x20) {
-		return;																	// 機能モジュールと重複するため除外
+		return;
 	}
-	x -= 2; y -= 2;																// 左上隅座標に変換
+	x -= 2; y -= 2;
 
 	for (int i = 0; i < 5; i ++) {
 		for (int j = 0; j < 5; j ++) {
@@ -370,19 +270,12 @@ void CQRCodeEncode::SetAlignmentPattern(int x, int y) {
 	}
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:失点数の取得											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 int CQRCodeEncode::CountPenalty() {
 
 	int iPenalty = 0;
 	int iCount = 0;
 	int	k = 0;
 
-	// 同色の列の隣接モジュール
 	for (int i = 0; i < m_iSymbolSize; i ++)	{
 		for (int j = 0; j < m_iSymbolSize - 4; j ++) {
 			for (k = j + 1, iCount = 1; k < m_iSymbolSize; k++)	{
@@ -399,7 +292,6 @@ int CQRCodeEncode::CountPenalty() {
 		}
 	}
 
-	// 同色の行の隣接モジュール
 	for (int i = 0; i < m_iSymbolSize; i ++) {
 		for (int j = 0; j < m_iSymbolSize - 4; j ++) {
 			for (k = j + 1, iCount = 1; k < m_iSymbolSize; k ++) {
@@ -416,7 +308,6 @@ int CQRCodeEncode::CountPenalty() {
 		}
 	}
 
-	// 同色のモジュールブロック（２×２）
 	for (int i = 0; i < m_iSymbolSize - 1; i ++) {
 		for (int j = 0; j < m_iSymbolSize - 1; j ++) {
 			if ((((g_byModuleData[i][j] & 0x11) == 0) == ((g_byModuleData[i + 1][j]		& 0x11) == 0)) &&
@@ -428,20 +319,18 @@ int CQRCodeEncode::CountPenalty() {
 		}
 	}
 
-	// 同一列における 1:1:3:1:1 比率（暗:明:暗:明:暗）のパターン
 	for (int i = 0; i < m_iSymbolSize; i ++) {
 		for (int j = 0; j < m_iSymbolSize - 6; j ++) {
-			if (((j == 0) ||				 (! (g_byModuleData[i][j - 1] & 0x11))) && // 明 または シンボル外
-											 (   g_byModuleData[i][j]     & 0x11)   && // 暗 - 1
-											 (! (g_byModuleData[i][j + 1] & 0x11))  && // 明 - 1
-											 (   g_byModuleData[i][j + 2] & 0x11)   && // 暗 ┐
-											 (   g_byModuleData[i][j + 3] & 0x11)   && // 暗 │3
-											 (   g_byModuleData[i][j + 4] & 0x11)   && // 暗 ┘
-											 (! (g_byModuleData[i][j + 5] & 0x11))  && // 明 - 1
-											 (   g_byModuleData[i][j + 6] & 0x11)   && // 暗 - 1
-				((j == m_iSymbolSize - 7) || (! (g_byModuleData[i][j + 7] & 0x11))))   // 明 または シンボル外
+			if (((j == 0) ||				 (! (g_byModuleData[i][j - 1] & 0x11))) &&
+											 (   g_byModuleData[i][j]     & 0x11)   &&
+											 (! (g_byModuleData[i][j + 1] & 0x11))  &&
+											 (   g_byModuleData[i][j + 2] & 0x11)   &&
+											 (   g_byModuleData[i][j + 3] & 0x11)   &&
+											 (   g_byModuleData[i][j + 4] & 0x11)   &&
+											 (! (g_byModuleData[i][j + 5] & 0x11))  &&
+											 (   g_byModuleData[i][j + 6] & 0x11)   &&
+				((j == m_iSymbolSize - 7) || (! (g_byModuleData[i][j + 7] & 0x11))))
 			{
-				// 前または後に4以上の明パターン
 				if (((j < 2 || ! (g_byModuleData[i][j - 2] & 0x11)) && 
 					 (j < 3 || ! (g_byModuleData[i][j - 3] & 0x11)) &&
 					 (j < 4 || ! (g_byModuleData[i][j - 4] & 0x11))) ||
@@ -455,20 +344,18 @@ int CQRCodeEncode::CountPenalty() {
 		}
 	}
 
-	// 同一行における 1:1:3:1:1 比率（暗:明:暗:明:暗）のパターン
 	for (int i = 0; i < m_iSymbolSize; i ++) {
 		for (int j = 0; j < m_iSymbolSize - 6; j ++) {
-			if (((j == 0) ||				 (! (g_byModuleData[j - 1][i] & 0x11))) && // 明 または シンボル外
-											 (   g_byModuleData[j]    [i] & 0x11)   && // 暗 - 1
-											 (! (g_byModuleData[j + 1][i] & 0x11))  && // 明 - 1
-											 (   g_byModuleData[j + 2][i] & 0x11)   && // 暗 ┐
-											 (   g_byModuleData[j + 3][i] & 0x11)   && // 暗 │3
-											 (   g_byModuleData[j + 4][i] & 0x11)   && // 暗 ┘
-											 (! (g_byModuleData[j + 5][i] & 0x11))  && // 明 - 1
-											 (   g_byModuleData[j + 6][i] & 0x11)   && // 暗 - 1
-				((j == m_iSymbolSize - 7) || (! (g_byModuleData[j + 7][i] & 0x11))))   // 明 または シンボル外
+			if (((j == 0) ||				 (! (g_byModuleData[j - 1][i] & 0x11))) &&
+											 (   g_byModuleData[j]    [i] & 0x11)   &&
+											 (! (g_byModuleData[j + 1][i] & 0x11))  &&
+											 (   g_byModuleData[j + 2][i] & 0x11)   &&
+											 (   g_byModuleData[j + 3][i] & 0x11)   &&
+											 (   g_byModuleData[j + 4][i] & 0x11)   &&
+											 (! (g_byModuleData[j + 5][i] & 0x11))  &&
+											 (   g_byModuleData[j + 6][i] & 0x11)   &&
+				((j == m_iSymbolSize - 7) || (! (g_byModuleData[j + 7][i] & 0x11))))
 			{
-				// 前または後に4以上の明パターン
 				if (((j < 2 || ! (g_byModuleData[j - 2][i] & 0x11)) && 
 					 (j < 3 || ! (g_byModuleData[j - 3][i] & 0x11)) &&
 					 (j < 4 || ! (g_byModuleData[j - 4][i] & 0x11))) ||
@@ -482,7 +369,6 @@ int CQRCodeEncode::CountPenalty() {
 		}
 	}
 
-	// 全体に対する暗モジュールの占める割合
 	for (int i = 0, iCount = 0; i < m_iSymbolSize; i ++) {
 		for (int j = 0; j < m_iSymbolSize; j ++) {
 			if (! (g_byModuleData[i][j] & 0x11)) {

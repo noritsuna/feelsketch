@@ -1,3 +1,21 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef CREEDSOLOMON_H
 #define	CREEDSOLOMON_H
 
@@ -9,7 +27,6 @@
 #define     NULL 0
 
 /////////////////////////////////////////////////////////////////////////////
-// GF(2^8)α指数→整数変換テーブル
 static int byExpToInt[] = {  1,   2,   4,   8,  16,  32,  64, 128,  29,  58, 116, 232, 205, 135,  19,  38,
 							 76, 152,  45,  90, 180, 117, 234, 201, 143,   3,   6,  12,  24,  48,  96, 192,
 							157,  39,  78, 156,  37,  74, 148,  53, 106, 212, 181, 119, 238, 193, 159,  35,
@@ -29,7 +46,6 @@ static int byExpToInt[] = {  1,   2,   4,   8,  16,  32,  64, 128,  29,  58, 116
 
 
 /////////////////////////////////////////////////////////////////////////////
-// GF(2^8)α整数→指数変換テーブル
 static int byIntToExp[] = {  0,   0,   1,  25,   2,  50,  26, 198,   3, 223,  51, 238,  27, 104, 199,  75,
 							  4, 100, 224,  14,  52, 141, 239, 129,  28, 193, 105, 248, 200,   8,  76, 113,
 							  5, 138, 101,  47, 225,  36,  15,  33,  53, 147, 142, 218, 240,  18, 130,  69,
@@ -49,7 +65,6 @@ static int byIntToExp[] = {  0,   0,   1,  25,   2,  50,  26, 198,   3, 223,  51
 
 
 /////////////////////////////////////////////////////////////////////////////
-// 誤り訂正生成多項式α係数
 static BYTE byRSExp7[]  = {87, 229, 146, 149, 238, 102,  21};
 static BYTE byRSExp10[] = {251,  67,  46,  61, 118,  70,  64,  94,  32,  45};
 static BYTE byRSExp13[] = { 74, 152, 176, 100,  86, 100, 106, 104, 130, 218, 206, 140,  78};
@@ -135,12 +150,11 @@ static LPBYTE  byRSExp[] = {NULL,      NULL,      NULL,      NULL,      NULL,   
 
 class CReedSolomon
 {
-// コンストラクション
 public:
 	CReedSolomon ();
 	~CReedSolomon ();
 
-	BOOL	SetCorrectCodeSize (int iCorrectCodeSize);											// ＲＳコードサイズ設定
+	BOOL	SetCorrectCodeSize (int iCorrectCodeSize);
 	BOOL	Encode (unsigned char * szData, int iDataSize, unsigned char * szRsCode, int *iRsCodeSize);
 	BOOL	Decode (unsigned char * szData, int iDataSize, unsigned char * szCorrectData, int *iCorrectDataSize);
 
@@ -162,11 +176,11 @@ private:
 	void	add_polys (int dst [], int src []);
 
 private:
-	int		m_iCorrectCodeSize;																	// ＲＳコードサイズ
+	int		m_iCorrectCodeSize;
 	int		m_NErrors;
 	int		m_NErasures;
 	int		m_Bytes			[MAX_LENGTH];
-	int		m_synBytes		[MAX_LENGTH];														// シンドローム
+	int		m_synBytes		[MAX_LENGTH];
 	int		m_ErrorLocs		[MAX_LENGTH];
 	int		m_ErasureLocs	[MAX_LENGTH];
 	int		m_Omega			[MAX_LENGTH];

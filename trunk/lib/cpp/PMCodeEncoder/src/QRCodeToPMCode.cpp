@@ -1,42 +1,34 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "QRCodeToPMCode.h"
 #include "global.h"
-//#include "CtrlBMP.h"
 #include "define.h"
 #include <stdio.h>
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeToPMCode::CQRCodeToPMCode () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CQRCodeToPMCode::~CQRCodeToPMCode () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:ＱＲコード→ＰＭコード変換								 //
-// 引数				:szQRCodeImage		:ＱＲコード画像データ				 //
-//                  :uiQRCodeImageSize	:ＱＲコード画像データサイズ			 //
-//					:lColorCode			:カラーコード						 //
-//					:szPMCodeImage		:ＰＭコード画像データ				 //
-//                  :uiPMCodeImageSize	:ＰＭコード画像データサイズ			 //
-//                  :uiSymbolSize		:シンボルサイズ						 //
-// 戻り値			:RESULT_OK												 //
-// 備考				:ＰＭコードのバッファは予め確保しておくこと				 //
-//					:引数にて渡されたＰＭコードに色を追加していくので		 //
-//					:バッファはクリアしない事！								 //
-// ------------------------------------------------------------------------- //
 int CQRCodeToPMCode::QRCodeToPMCode (char *szQRCodeImage, UINT uiQRCodeImageSize, long lColorCode
 							, char *szPMCodeImage, UINT uiPMCodeImageSize, int uiSymbolSize) {
 
@@ -69,16 +61,13 @@ int CQRCodeToPMCode::QRCodeToPMCode (char *szQRCodeImage, UINT uiQRCodeImageSize
 	szColor [1] = szColor [5];
 	szColor [5] = cTemp;
 
-	// 重畳処理
 	for (int i = 0; i < uiSymbolSize; i ++) {
 		for (int j = 0; j < uiSymbolSize; j ++) {
-			// ＱＲコード画像の検出位置算出
 			iBaseImagePos = (i * iBaseWidthLength) + j;
 
-			// ＰＭコード画像の設定位置算出
 			iValueImagePos = (i * iValueWidthLength) + (j * iBitSize);
 
-			if ((szQRCodeImage [iBaseImagePos] & BIT_ON) == BIT_ON) {		// 黒
+			if ((szQRCodeImage [iBaseImagePos] & BIT_ON) == BIT_ON) {
 				szPMCodeImage [iValueImagePos] = szPMCodeImage [iValueImagePos] | h2tb1 (&szColor [0]);
 				szPMCodeImage [iValueImagePos + 1] = szPMCodeImage [iValueImagePos + 1] | h2tb1 (&szColor [2]);
 				szPMCodeImage [iValueImagePos + 2] = szPMCodeImage [iValueImagePos + 2] | h2tb1 (&szColor [4]);

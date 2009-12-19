@@ -1,42 +1,35 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "PMCodeToQRCodes.h"
 #include "Global.h"
 #include "define.h"
 #include <stdio.h>
 
 
-
-
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CPMCodeToQRCodes::CPMCodeToQRCodes () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CPMCodeToQRCodes::~CPMCodeToQRCodes () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:ＰＭコード→ＱＲコード変換								 //
-// 引数				:szPMCodeImage		:ＰＭコード画像データ				 //
-//                  :uiPMCodeImageSize	:ＰＭコード画像データサイズ			 //
-//					:lColorCode			:カラーコード						 //
-//					:szQRCodeImage		:ＱＲコード画像データ				 //
-//                  :uiQRCodeImageSize	:ＱＲコード画像データサイズ			 //
-//                  :uiSymbolSize		:ＱＲコードシンボルサイズ			 //
-// 戻り値			:RESULT_OK												 //
-// 備考				:ＱＲコードのバッファは予め確保しておくこと				 //
-// ------------------------------------------------------------------------- //
 int CPMCodeToQRCodes::PMCodeToQRCode (char *szPMCodeImage, UINT uiPMCodeImageSize, long lColorCode
 									, char *szQRCodeImage, UINT uiQRCodeImageSize, int uiSymbolSize) {
 	long	lBit;
@@ -60,8 +53,7 @@ int CPMCodeToQRCodes::PMCodeToQRCode (char *szPMCodeImage, UINT uiPMCodeImageSiz
 	if (uiQRCodeImageSize < ((unsigned int)iValueWidthLength * uiSymbolSize)) {
 		return RESULT_ERROR_SECURE_MEMORY;	
 	}
-	// カラーコードの入れ替え
-	// 画面及び、INIファイル上ではRGBだが、画像データなどはBGRで格納されているので、入れ替えを行う
+
 	memset (szTemp, '\0', sizeof (szTemp));
 	sprintf (szTemp, "%0.6X", lColorCode);
 
@@ -73,13 +65,10 @@ int CPMCodeToQRCodes::PMCodeToQRCode (char *szPMCodeImage, UINT uiPMCodeImageSiz
 	szTemp [5] = cTemp;
 	lColorCode = AscHexToLong(szTemp, strlen (szTemp));
 
-	// 単層分解処理
 	for (int i = 0; i < uiSymbolSize; i ++) {
 		for (int j = 0; j < uiSymbolSize; j ++) {
-			// 元画像の検出位置算出
 			iBaseImagePos = (i * iBaseWidthLength) + (j * iBitSize);
 
-			// 三値画像の設定位置算出
 			iValueImagePos = (i * iValueWidthLength) + j;
 
 			memset (szColor, '\0', sizeof (szColor));
@@ -91,19 +80,14 @@ int CPMCodeToQRCodes::PMCodeToQRCode (char *szPMCodeImage, UINT uiPMCodeImageSiz
 			}
 			lBit = AscHexToLong (szTemp, iBitSize * 2);
 
-			// カラーコードでANDをかけた結果によりビットのON/OFFを決める
 			if (lBit == 0xFFFFFF) {
-				szQRCodeImage [iValueImagePos] = BIT_ON;					// 黒
-//			if (lBit == 0xFFFFFF) {
-//				szQRCodeImage [iValueImagePos] = BIT_OFF;					// 白
+				szQRCodeImage [iValueImagePos] = BIT_ON;
 			} else if (lBit == 0x000000) {
-				szQRCodeImage [iValueImagePos] = BIT_OFF;					// 白
-//			} else if (lBit == 0x000000) {
-//				szQRCodeImage [iValueImagePos] = BIT_ON;					// 黒
+				szQRCodeImage [iValueImagePos] = BIT_OFF;
 			} else if ((lBit & lColorCode) == 0x000000){
-				szQRCodeImage [iValueImagePos] = BIT_OFF;					// 白
+				szQRCodeImage [iValueImagePos] = BIT_OFF;
 			} else {
-				szQRCodeImage [iValueImagePos] = BIT_ON;					// 黒
+				szQRCodeImage [iValueImagePos] = BIT_ON;
 			}
 		}
 	}

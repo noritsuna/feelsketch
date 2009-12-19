@@ -1,9 +1,20 @@
-/*
- * PMCodeEncoder.cpp
- *
- *  Created on: 2009/11/19
- *      Author: gabu
- */
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "PMCodeEncoder.h"
 
@@ -17,21 +28,16 @@ PMCodeEncoder::~PMCodeEncoder() {
 int PMCodeEncoder::encode(PMCodeEncodeParameter param, PMCodeImageData &result) {
 	int i = 0, ret = 1;
 
-	// 基準色の設定
 	PMCodeColorCodeSetting colorCode = param.getPMCodeColorCodeSetting();
 	for (i = 0; i < param.getLayer(); i++) {
 		g_ColorCodeSettingDefinition[i] = colorCode.getColorCode(i);
 	}
 
-	// 描画色の生成
-	MakeColorTable(param.getLayer(), param.getLayer()); // 1層1色なので
+	MakeColorTable(param.getLayer(), param.getLayer());
 
-	// データが指定された型番で収まるかチェック
-	// Autoの場合は、ここで最適な型番を決定する。
 	ret = check(param);
 	if (ret != TRUE) return ret;
 
-	// エンコードしたいデータをセット
 	ret = mCPMCodeEncode.SetPMCodeData(param.getData(),
 			              param.getDataSize(),
 			              param.getLayer(),
@@ -43,11 +49,9 @@ int PMCodeEncoder::encode(PMCodeEncodeParameter param, PMCodeImageData &result) 
 			              param.getNote());
 	if (ret != RESULT_OK) return ret;
 
-	// エンコード！
 	ret = mCPMCodeEncode.EncodePMCode();
 	if (ret != RESULT_OK) return ret;
 
-	// 結果を取得して、詰め込む
 	char	*image;
 	UINT	imageSize;
 	int		width, height;
@@ -61,21 +65,17 @@ int PMCodeEncoder::encode(PMCodeEncodeParameter param, PMCodeImageData &result) 
 	return RESULT_OK;
 }
 
-// 指定された型番でＰＭコードの作成ができるかチェックする。
-// 型番が自動の場合、最適な型番をセットする。
 BOOL PMCodeEncoder::check(PMCodeEncodeParameter &param) {
 
 	BOOL	bRet;
 	int		iMinVersion;
 	UINT    dataSize = param.getDataSize() + EXT_SIZE + SIZE_SIZE + RESERVE_SIZE;
 
-	// 型番が自動のとき
 	if (param.getVersion() == VERSION_AUTO) {
-		// 2006/11/27 色識別コードの拡張(６層のみ)
 		if (param.getLayer() == 3) {
 			iMinVersion = MIN_VERSIONSIZE;
 		} else {
-			iMinVersion = 3;												// 層数が６の場合、最低型番は３
+			iMinVersion = 3;
 		}
 		for (int i = iMinVersion; i <= MAX_VERSIONSIZE; i ++) {
 			bRet = mCPMCodeEncode.CheckDataSizeToPMCode (dataSize, param.getLayer(), i, param.getErrorCorrection());

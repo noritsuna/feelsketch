@@ -1,3 +1,21 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef     __PM_CODE_ENCODE_H__
 #define     __PM_CODE_ENCODE_H__
 
@@ -6,45 +24,37 @@
 #include "PMCodeMakeHeader.h"
 #include "ImageUtil.h"
 
-// ------------------------------------------------------------------------- //
-// PMコードリーダ機能基底クラス												 //
-// ------------------------------------------------------------------------- //
 class CPMCodeEncode : public CQRCodeToPMCode, CPMCodeMakeHeader
 {
-// コンストラクション
 public:
 	CPMCodeEncode ();
 	~CPMCodeEncode ();
 
 	int		SetPMCodeData (char *szData, UINT uiDataSize, int iLayer, int iVersion, int iRSLevel, BOOL bMaskAuto, int iModuleSize);
-																			// 暗号化元データのセット
 	int 	SetPMCodeData (char *data, UINT data_size, int layer
 						  , int version, int error_correction, BOOL use_mask, int module_size
 						  , char *extension, char *note);
-	int		EncodePMCode ();												// 暗号化処理
-																			// ＰＭコード画像の取得
+	int		EncodePMCode ();
 	int		GetPMCodeImageData (char **szImage, UINT *uiImageSize, int *iWidth, int *iHeight);
-																			// データがＰＭコードに収まるかのチェック
 	BOOL	CheckDataSizeToPMCode (UINT uiDataSize, int iLayer, int iVersion, int iRSLevel);
 
-	// ＱＲコード画像取得
-	UINT	GetQRCodeSize (int iLayer);										// QRコード画像サイズの取得
+	UINT	GetQRCodeSize (int iLayer);
 	int		GetQRCodeImageData (char **szImage, UINT *uiImageSize, int *iWidth, int *iHeight, int iLayer);
 
 private:
-	char		*m_szEncodeData;											// 暗号化（元）データ
-	UINT		m_uiDataSize;												// データサイズ
-	char		*m_szPMCodeImage;											// ＰＭコード画像
-	UINT		m_uiPMCodeImageSize;										// ＰＭコード画像サイズ
-	char		*m_szQRCodeImage [MAX_LAYERSIZE];							// ＱＲコード画像
-	UINT		m_uiQRCodeImageSize [MAX_LAYERSIZE];						// ＱＲコード画像サイズ
-	int			m_iWidth;													// 画像横ピクセルサイズ
-	int			m_iHeight;													// 画像縦ピクセルサイズ
-	int			m_iLayer;													// 層数
-	int			m_iVersion;													// 型番
-	int			m_iSymbolSize;												// シンボルサイズ
-	int			m_iRSLevel;													// 誤り訂正レベル
-	BOOL		m_bMaskAuto;												// マスクの自動/手動フラグ
-	int			m_iModuleSize;												// モジュールサイズ
+	char		*m_szEncodeData;
+	UINT		m_uiDataSize;
+	char		*m_szPMCodeImage;
+	UINT		m_uiPMCodeImageSize;
+	char		*m_szQRCodeImage [MAX_LAYERSIZE];
+	UINT		m_uiQRCodeImageSize [MAX_LAYERSIZE];
+	int			m_iWidth;
+	int			m_iHeight;
+	int			m_iLayer;
+	int			m_iVersion;
+	int			m_iSymbolSize;
+	int			m_iRSLevel;
+	BOOL		m_bMaskAuto;
+	int			m_iModuleSize;
 };
 #endif

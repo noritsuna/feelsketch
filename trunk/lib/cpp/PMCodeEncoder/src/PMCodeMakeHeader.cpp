@@ -1,44 +1,37 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "define.h"
 #include "PMCodeMakeHeader.h"
 #include "global.h"
-//#include "CtrlBMP.h"
 #include <stdio.h>
-// ------------------------------------------------------------------------- //
-// 本関数に渡されるＰＭコード画像は補正後の画像とします。
-// 
-// ------------------------------------------------------------------------- //
-#define QR_CODE_BIT_ON		'\x00'				// ビットＯＮ（黒）
-#define QR_CODE_BIT_OFF		'\xFF'				// ビットＯＦＦ（白）
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
+#define QR_CODE_BIT_ON		'\x00'
+#define QR_CODE_BIT_OFF		'\xFF'
+
 CPMCodeMakeHeader::CPMCodeMakeHeader () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CPMCodeMakeHeader::~CPMCodeMakeHeader () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:ＰＭコード画像のセット									 //
-// 引数				:szImage		:ＰＭコード画像データ					 //
-//                  :iImageSize		:ＰＭコード画像データサイズ				 //
-//                  :iSymbolSize	:ＰＭコード画像シンボルサイズ			 //
-// 戻り値			:RESULT_OK												 //
-//                  :RESULT_ERROR_SECURE_MEMORY								 //
-// 備考				:画像を保持する必要が無いので、本関数で処理を行います	 //
-// ------------------------------------------------------------------------- //
 int CPMCodeMakeHeader::SetPMCodeHeader (char *szImage, UINT iImageSize, int iSymbolSize, int iLayer) {
 
 	int		iBitSize;
@@ -54,66 +47,46 @@ int CPMCodeMakeHeader::SetPMCodeHeader (char *szImage, UINT iImageSize, int iSym
 	m_iSymbolSize	= iSymbolSize;
 	m_iVersion		= SYM2VER (m_iSymbolSize);	
 
-// 層数の設定
 	iBitSize	= BIT_COUNT_24 / 8;
 	iLineSize	= (int)CalcPitch (BIT_COUNT_24, m_iSymbolSize);
 
-	// データのセット
 	for (int i = 0; i < LAYER_BIT; i ++) {
 		iX = (LAYER_CODE_POS_X * iBitSize);
-// 2006/10/12 tsato update ----------------------------------------------
-//		iY = 9 + i;
 		iY = m_iSymbolSize - (10 + i);
-// ----------------------------------------------------------------------
-																			// 該当位置座標の計算
+
 		iDataPos = (iY * iLineSize) + iX;
 		memset (szColor, '\0', sizeof (szColor));
 		memcpy (szColor, &g_szLayerSetting [m_iLayer - MIN_LAYERSIZE][i * 3], PM_CODE_BIT_SIZE);
-
-// comment out start 2009/11/18 gabu
-// Windows版では、以下の3行でRとBを入れ替えて、うまくいっているが、
-// OSS版（開発はMac OS X）では、なぜかRとBが反転する。
-// 以下の3行をコメントアウトして、RとBの入れ替えをやめると、デコードが成功する。
-// （以下の3行で、RとBを入れ替えると、デコード時にエラーになる。）
-//		cTemp = szColor [0];
-//		szColor [0] = szColor [2];
-//		szColor [2] = cTemp;
-// comment out end 2009/11/18 gabu
 		memcpy (&szImage [iDataPos], szColor, PM_CODE_BIT_SIZE);
 	}
-// 色コードの設定
 #if 0
 	for (int i = 0; i < PM_CODE_HEADER_COLOR_CODE; i ++) {
 		iX = (COLOR_CODE_POS_X - (i / 4)) * iBitSize;
-// 2006/10/12 tsato update ----------------------------------------------
-//		iY = 9 + (i % 4);
 		iY = m_iSymbolSize - (10 + (i % 4));
-// ----------------------------------------------------------------------
-		// 該当位置座標の計算
+
 		iDataPos = (iY * iLineSize) + iX;
 		lColorCode = 0;
 
-		 // 色コード設定以上の項目は設定しない
-		if (g_ColorCodeSetting == 0) {										// 定義ファイル
+		if (g_ColorCodeSetting == 0) {
 			lColorCode = g_ColorCodeSettingDefinition [i];	
-		} else {															// デフォルト値
-			if (m_iLayer == 3) {											// 層数は３
+		} else {
+			if (m_iLayer == 3) {
 				if (i < m_iLayer) {
 					lColorCode = g_ColorCodeSetting3 [i];
 				} else {
-					break;													// それ以上は設定しない
+					break;
 				}
-			} else if (m_iLayer > 9) {										// 層数は１０～２４
+			} else if (m_iLayer > 9) {
 				if (i < m_iLayer || i < PM_CODE_HEADER_COLOR_CODE) {
 					lColorCode = g_ColorCodeSetting10to24 [i];	
 				} else {
-					break;													// それ以上は設定しない
+					break;
 				}
-			} else {														// 層数は３～９
+			} else {
 				if (i < m_iLayer) {
 					lColorCode = g_ColorCodeSetting4to9 [i];	
 				} else {
-					break;													// それ以上は設定しない
+					break;
 				}
 			}
 		}
@@ -133,7 +106,6 @@ int CPMCodeMakeHeader::SetPMCodeHeader (char *szImage, UINT iImageSize, int iSym
 		memcpy (&szImage [iDataPos], szColorHex, PM_CODE_BIT_SIZE);
 	}
 #else 
-// 2006/11/28 色識別コード拡張-----------------------------------------------
 	for (int i = 0; i < g_ColorCodeTableSize; i ++) {
 		if (i < PM_CODE_HEADER_COLOR_CODE) {
 			iX = (COLOR_CODE_POS_X - (i / 4)) * iBitSize;
@@ -146,7 +118,6 @@ int CPMCodeMakeHeader::SetPMCodeHeader (char *szImage, UINT iImageSize, int iSym
 			iY = m_iSymbolSize - (18 + ((i - PM_CODE_HEADER_COLOR_CODE2) % 4));
 		}
 
-		// 該当位置座標の計算
 		iDataPos = (iY * iLineSize) + iX;
 		lColorCode = 0;
 		lColorCode = g_ColorCodeTable [i];
@@ -164,7 +135,6 @@ int CPMCodeMakeHeader::SetPMCodeHeader (char *szImage, UINT iImageSize, int iSym
 			szColorHex [j] = h2tb1 (&szColor [j * 2]);
 		}
 		memcpy (&szImage [iDataPos], szColorHex, PM_CODE_BIT_SIZE);
-// --------------------------------------------------------------------------
 	}
 #endif
 	return RESULT_OK;

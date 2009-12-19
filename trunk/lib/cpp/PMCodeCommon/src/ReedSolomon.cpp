@@ -1,24 +1,33 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "ReedSolomon.h"
 #include <stdlib.h>
 #include <string.h>
 
-// コンストラクタ
 CReedSolomon::CReedSolomon () {
 	m_iCorrectCodeSize = 0;
 }
 
-// デストラクタ
 CReedSolomon::~CReedSolomon () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:誤り訂正コードサイズ設定								 //
-// 引数				:iCorrectCodeSize	:誤り訂正コードサイズ				 //
-// 戻り値			:成功/失敗（サイズ大きすぎ）							 //
-// 備考				:符号化後データは符号化前データ＋誤り訂正データとなる。	 //
-//					:あらかじめバッファを確保しておくこと					 //
-// ------------------------------------------------------------------------- //
 BOOL CReedSolomon::SetCorrectCodeSize (int iCorrectCodeSize) {
 
 	if (iCorrectCodeSize > MAX_LENGTH) {
@@ -29,28 +38,17 @@ BOOL CReedSolomon::SetCorrectCodeSize (int iCorrectCodeSize) {
 	return TRUE;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:エンコード												 //
-// 引数				:szData				:符号化前データ						 //
-//					:iDataSize			:符号化前データサイズ				 //
-//					:szRsCode			:符号化後データ						 //
-//					:iRsCodeSize		:符号化後データサイズ				 //
-// 戻り値			:成功/失敗												 //
-// 備考				:符号化後データは符号化前データ＋誤り訂正データとなる。	 //
-//					:あらかじめバッファを確保しておくこと					 //
-// ------------------------------------------------------------------------- //
 BOOL CReedSolomon::Encode (unsigned char * szData, int iDataSize, unsigned char * szRsCode, int *iRsCodeSize) {
 
-	int iLFSR [MAX_LENGTH + 1];											// 誤り訂正コードのサイズは最大MAX_LENGTHとする
+	int iLFSR [MAX_LENGTH + 1];
 	int	iByte;
 
-	if (m_iCorrectCodeSize == 0 || iDataSize > MAX_LENGTH) {			// データサイズが最大長以上の場合はエラーとする
+	if (m_iCorrectCodeSize == 0 || iDataSize > MAX_LENGTH) {
 		return FALSE;
 	}
-	for(int i = 0; i < MAX_LENGTH + 1; i ++) {							// 初期化
+	for(int i = 0; i < MAX_LENGTH + 1; i ++) {
 		iLFSR [i] = 0;
 	}
-	// ＲＳコードの作成処理
 	for (int i = 0; i < iDataSize; i ++) {
 		iByte = szData [i] ^ iLFSR [m_iCorrectCodeSize - 1];
 		for (int j = m_iCorrectCodeSize - 1; j > 0; j --) {
@@ -63,25 +61,16 @@ BOOL CReedSolomon::Encode (unsigned char * szData, int iDataSize, unsigned char 
 		m_Bytes [i] = iLFSR [i];
 	}
 
-	for (int i = 0; i < iDataSize; i ++) {								// データ部のセット
+	for (int i = 0; i < iDataSize; i ++) {
 		szRsCode [i] = szData [i];
 	}
-	for (int i = 0; i < m_iCorrectCodeSize; i ++) {						// ＲＳコード部のセット
+	for (int i = 0; i < m_iCorrectCodeSize; i ++) {
 		szRsCode[i + iDataSize] = m_Bytes [m_iCorrectCodeSize - 1 - i];
 	}
 	*iRsCodeSize = iDataSize + m_iCorrectCodeSize;
 	return TRUE;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デコード												 //
-// 引数				:szData				:誤り訂正前データ					 //
-//					:iDataSize			:誤り訂正前データサイズ				 //
-//					:szCorrectData		:誤り訂正後データ					 //
-//					:iCorrectDataSize	:誤り訂正後データサイズ				 //
-// 戻り値			:誤り訂正成功/失敗										 //
-// 備考				:複合化後データのバッファを確保しておくこと				 //
-// ------------------------------------------------------------------------- //
 BOOL CReedSolomon::Decode (unsigned char * szData, int iDataSize, unsigned char * szCorrectData, int *iCorrectDataSize) {
 
 	int	sum;
@@ -90,10 +79,10 @@ BOOL CReedSolomon::Decode (unsigned char * szData, int iDataSize, unsigned char 
 	int nerasures = 0;
 	int iRet;
 
-	for (int i = 0; i < MAX_LENGTH; i ++) {							// 初期化
+	for (int i = 0; i < MAX_LENGTH; i ++) {
 		m_synBytes [i] = 0;
 	}
-	// 誤り検出処理
+
 	for (int j = 0; j < m_iCorrectCodeSize; j ++) {
 		sum	= 0;
 		for (int i = 0; i < iDataSize; i ++) {
@@ -101,19 +90,19 @@ BOOL CReedSolomon::Decode (unsigned char * szData, int iDataSize, unsigned char 
 		}
 		m_synBytes [j]  = sum;
 	}
-	// シンドロームのチェック
+
 	for (int i = 0; i < m_iCorrectCodeSize; i ++) {
 		if (m_synBytes [i] != 0) {
 			nz = 1;
 		}
 	}
-	// 誤り無し
+
 	if (nz == 0) {
 		memcpy (szCorrectData, szData, iDataSize);
 		*iCorrectDataSize = iDataSize - m_iCorrectCodeSize;
 		return TRUE;
 	}
-	// 誤り訂正処理
+
     iRet = correct_errors_erasures (szData, iDataSize, nerasures, erasures);
 	if (iRet == 0) {
 		return FALSE;
@@ -123,15 +112,10 @@ BOOL CReedSolomon::Decode (unsigned char * szData, int iDataSize, unsigned char 
 	return TRUE;
 }
 
-// --------------------------  以下private関数  ---------------------------------
-// 誤り訂正
 int CReedSolomon::correct_errors_erasures (unsigned char codeword [], int csize, int nerasures, int erasures []) {
 
 	int i, err;
 
-  /* If you want to take advantage of erasure correction, be sure to
-     set m_NErasures and m_ErasureLocs[] with the locations of erasures. 
-     */
 	m_NErasures = nerasures;
 	for (i = 0; i < m_NErasures; i ++) {
 		m_ErasureLocs [i] = erasures [i];

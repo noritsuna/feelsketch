@@ -1,27 +1,40 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef     __QR_CODE_SYMBOL_H__
 #define     __QR_CODE_SYMBOL_H__
 
 #include "define.h"
 
-// ------------------------------------------------------------------------- //
-// QRコードシンボル読込クラス												 //
-// 型式の読込（型番は既に分かっているので処理しない）						 //
-// ------------------------------------------------------------------------- //
 class CQRCodeSymbol
 {
-// コンストラクション
 public:
 	CQRCodeSymbol ();
 	~CQRCodeSymbol ();
 
 	int GetQRCodeSymbol (char * szImage, UINT iImageSize, int iSymbolSize
-						  , int *iRSLevel, int *iMaskPattern);				// シンボル（型式）の取得
+						  , int *iRSLevel, int *iMaskPattern);
 
-	int SetQRCodeSymbol (int iSymbolSize, int iRSLevel, int iMaskPattern);	// シンボル（型式）の設定
+	int SetQRCodeSymbol (int iSymbolSize, int iRSLevel, int iMaskPattern);
 
 private:
-	int	m_iRSLevel;												// 誤り訂正レベル
-	int	m_iMaskPattern;											// マスクパターン
+	int	m_iRSLevel;
+	int	m_iMaskPattern;
 
 };
 #endif

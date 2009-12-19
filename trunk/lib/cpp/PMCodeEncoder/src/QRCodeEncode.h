@@ -1,38 +1,52 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #ifndef     __QR_CODE_ENCODE_H__
 #define     __QR_CODE_ENCODE_H__
 
 #include "define.h"
 
-// ------------------------------------------------------------------------- //
-// QRコード複合クラス														 //
-// ------------------------------------------------------------------------- //
 class CQRCodeEncode
 {
-// コンストラクション
 public:
 	CQRCodeEncode ();
 	~CQRCodeEncode ();
 
 	int		SetQRCodeData (char * szData, UINT iDataSize, int iVersion
-						, int iRSLevel, int iMaskPattern);					// QRコード情報のセット
-	UINT	EncodeQRCode ();												// QRコードのエンコード
-	int		GetQRCodeImage (char *szImage, UINT iBufferSize);				// QRコード画像の取得
+						, int iRSLevel, int iMaskPattern);
+	UINT	EncodeQRCode ();
+	int		GetQRCodeImage (char *szImage, UINT iBufferSize);
 
 private:
-	void	SetFunctionModule ();											// 機能モジュールの設定
-	void	SetFinderPattern(int x, int y);									// 位置検出パターン
-	void	SetVersionPattern();											// 型番情報の設定
-	void	SetAlignmentPattern(int x, int y);								// 位置合わせパターン配置
-	int		CountPenalty();													// 失点数の取得
+	void	SetFunctionModule ();
+	void	SetFinderPattern(int x, int y);
+	void	SetVersionPattern();
+	void	SetAlignmentPattern(int x, int y);
+	int		CountPenalty();
 
 private:
-	char	*m_QRCodeImage;													// ＱＲコード画像
-	UINT	m_uiQRCodeImageSize;											// ＱＲコード画像サイズ
-	char	*m_szEncodeData;												// エンコードデータ
-	UINT	m_uiEncodeDataSize;												// エンコードデータサイズ
-	int		m_iVersion;														// 型番
-	int		m_iRSLevel;														// 誤り訂正レベル
-	int		m_iMaskPattern;													// マスクパターン
-	int		m_iSymbolSize;													// シンボルサイズ
+	char	*m_QRCodeImage;
+	UINT	m_uiQRCodeImageSize;
+	char	*m_szEncodeData;
+	UINT	m_uiEncodeDataSize;
+	int		m_iVersion;
+	int		m_iRSLevel;
+	int		m_iMaskPattern;
+	int		m_iSymbolSize;
 };
 #endif

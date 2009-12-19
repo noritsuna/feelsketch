@@ -1,41 +1,35 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "define.h"
 #include "PMCodeAnalysis.h"
 #include "Global.h"
 
 
-// ------------------------------------------------------------------------- //
-// 本関数に渡されるＰＭコード画像は補正後の画像とします。
-// 
-// ------------------------------------------------------------------------- //
-
-// ------------------------------------------------------------------------- //
-// 機能概要			:コンストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CPMCodeAnalysis::CPMCodeAnalysis () {
 
 	m_iLayerCount = 0;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:デストラクタ											 //
-// 引数				:なし													 //
-// 戻り値			:なし													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 CPMCodeAnalysis::~CPMCodeAnalysis () {
 
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:層数の取得												 //
-// 引数				:szImage		:ＰＭ画像データ							 //
-//                  :iImageSize		:ＰＭ画像データサイズ					 //
-// 戻り値			:層数													 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 int CPMCodeAnalysis::GetLayerCount (char *szImage, UINT iImageSize, int iSymbolSize) {
 
 	char	szbuf	[32];
@@ -45,29 +39,25 @@ int CPMCodeAnalysis::GetLayerCount (char *szImage, UINT iImageSize, int iSymbolS
 	int		iLineSize;
 	char	cTemp [2];
 
-// 層数の取得
 	iBitSize	= BIT_COUNT_24 / 8;
 	iLineSize	= (int)CalcPitch (BIT_COUNT_24, iSymbolSize);
 
 	memset (szbuf, '\0', sizeof (szbuf));
-	// データ取得
+
 	for (int i = 0; i < LAYER_BIT; i ++) {
 		iX = (LAYER_CODE_POS_X * iBitSize);
 		iY = (9 + i);
-		iDataPos = (iY * iLineSize) + iX;									// 該当位置座標の計算
+		iDataPos = (iY * iLineSize) + iX;
 		memcpy (&szbuf [i * PM_CODE_BIT_SIZE], &szImage [iDataPos], PM_CODE_BIT_SIZE);
 	}
 	m_iLayerCount = 0;
 
-	// データ入れ替え（画像はRGBとして認識しているが、ビットマップデータはBGRの順のため入れ替える）
-	// 時間短縮のために、対応表自体を入れ替えれば、処理が少し減るかな・・・
 	for (int i = 0; i < LAYER_BIT; i ++) {
 		cTemp [0] = szbuf [i * iBitSize];
 		szbuf [i * iBitSize] = szbuf [(i * iBitSize) + 2];
 		szbuf [(i * iBitSize) + 2] = cTemp [0];
 	}
 
-	// 二値化する
 	for (int i = 0; i <= PM_CODE_HEADER_LAYER_CODE; i ++) {
 		if (((BYTE)szbuf [i]) < (0xFF / 2)) {
 			szbuf [i] = 0x00;
@@ -77,22 +67,14 @@ int CPMCodeAnalysis::GetLayerCount (char *szImage, UINT iImageSize, int iSymbolS
 	}
 
 	for (int i = 0; i <= PM_CODE_HEADER_LAYER_CODE; i ++) {
-		// 取得したデータから該当する層数を検索する
 		if (memcmp (szbuf, &g_szLayerSetting [i][0], LAYER_CODE_BUF_SIZE) == 0) {
-			m_iLayerCount = i + MIN_LAYERSIZE;								// 最小層数は３から
+			m_iLayerCount = i + MIN_LAYERSIZE;
 			break;
 		}
 	}
 	return m_iLayerCount;
 }
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:カラーコードの取得										 //
-// 引数				:lColorCode		:色コード								 //
-// 戻り値			:RESULT_OK												 //
-// 備考				:ＰＭコード画像に設定してある色は１層〜２０層のみ		 //
-//					:ＰＭコードに設定された層数のみ取得します				 //
-// ------------------------------------------------------------------------- //
 int	CPMCodeAnalysis::GetColorCode (long * lColorCode, char *szImage, UINT iImageSize, int iSymbolSize, int iVersion) {
 	
 	char	szbuf	[32];
@@ -104,15 +86,12 @@ int	CPMCodeAnalysis::GetColorCode (long * lColorCode, char *szImage, UINT iImage
 	char	cTemp [2];
 	long	lWorkColor [COLORTABLE_SIZE];
 
-	// 色コードの取得（層数分だけ取得を行う）
 	iBitSize	= BIT_COUNT_24 / 8;
 	iLineSize	= (int)CalcPitch (BIT_COUNT_24, iSymbolSize);
-	// 傾き補正→色コード→色補正→層数取得の順で行う必要があるため
-	// 層数は使用できない。テーブルの最大数としておく
 	if (iVersion < 3) {
-		g_ColorCodeTableSize = PM_CODE_HEADER_COLOR_CODE;						// １or２型：色識別コードサイズは既存
+		g_ColorCodeTableSize = PM_CODE_HEADER_COLOR_CODE;
 	} else {
-		g_ColorCodeTableSize = COLORTABLE_SIZE;									// ３型以降：色識別コードサイズは拡張版
+		g_ColorCodeTableSize = COLORTABLE_SIZE;
 	}
 
 	for (int i = 0; i < g_ColorCodeTableSize; i ++) {
@@ -126,7 +105,7 @@ int	CPMCodeAnalysis::GetColorCode (long * lColorCode, char *szImage, UINT iImage
 			iX = (LAYER_CODE_POS_X - ((i - PM_CODE_HEADER_COLOR_CODE2) / 4)) * iBitSize;
 			iY = (17 + ((i - PM_CODE_HEADER_COLOR_CODE2) % 4));
 		}
-		iDataPos = (iY * iLineSize) + iX;									// 該当位置座標の計算
+		iDataPos = (iY * iLineSize) + iX;
 		memcpy (szbuf, &szImage [iDataPos], PM_CODE_BIT_SIZE);
 		memset (szTemp, '\0', sizeof (szTemp));
 		cTemp [0]= szbuf [0];
@@ -140,7 +119,6 @@ int	CPMCodeAnalysis::GetColorCode (long * lColorCode, char *szImage, UINT iImage
 	}
 
 	for (int i = 0; i < COLORTABLE_SIZE; i ++){
-//	for (int i = 0; i < m_iLayerCount; i ++){
 		lColorCode [i] = lWorkColor [i];
 	}
 	return RESULT_OK;
