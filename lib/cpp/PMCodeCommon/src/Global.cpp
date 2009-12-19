@@ -1,15 +1,26 @@
+/**
+***                  "Feel Sketch" PMCode Encoder & Decoder.
+***    Copyright (C) 2009, Content Idea of ASIA Co.,Ltd. (oss.pmcode@ci-a.com)
+***
+***    This program is free software: you can redistribute it and/or modify
+***    it under the terms of the GNU General Public License as published by
+***    the Free Software Foundation, either version 3 of the License, or
+***    (at your option) any later version.
+***
+***    This program is distributed in the hope that it will be useful,
+***    but WITHOUT ANY WARRANTY; without even the implied warranty of
+***    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+***    GNU General Public License for more details.
+***
+***    You should have received a copy of the GNU General Public License
+***    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "define.h"
 #include "Global.h"
 #include "mathematics.h"
 #include <ctype.h>
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:１行のビット長計算										 //
-// 引数				:BitCount			:ビットカウント(8,16,24,32のみ)		 //
-//					:Width				:幅									 //
-// 戻り値			:１行のビット長											 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 long CalcPitch (short BitCount,long Width) {
 
 	long lPitch;
@@ -29,7 +40,6 @@ long CalcPitch (short BitCount,long Width) {
 
 
 
-// グローバル変数定義
 char	g_CurrentPath [MAX_PATH];
 int		g_MaskSetting [MAX_LAYERSIZE];
 long	g_ColorCodeSettingDefinition [MAX_LAYERSIZE];
@@ -48,15 +58,10 @@ int		g_CorrectColorThreshold;
 BYTE	g_byModuleData[MAX_MODULESIZE][MAX_MODULESIZE];
 long	g_PMCodeColor [COLORTABLE_SIZE + 1];
 //long	g_PMCodeColor [PM_CODE_HEADER_COLOR_CODE];
-int		g_iLevelingRate;															// 平均化率
+int		g_iLevelingRate;
 int		g_iCheckFileOutput;
 
-// -----------------------------------------------------------------------------------------
-// 2007/01/05 型番コードを使用しない様にしたので、コードワード数を変更した。
-// 4バイト分加算
-
-// QRコードバージョン(型番)情報
-QR_VERSIONINFO QR_VersonInfo[41] = {{0}, // (ダミー:Ver.0)
+QR_VERSIONINFO QR_VersonInfo[41] = {{0},
 										 { 1, // Ver.1
 										    23,   16,   13,   10,    6,
 										   0,   0,   0,   0,   0,   0,   0,
@@ -499,7 +504,6 @@ QR_VERSIONINFO QR_VersonInfo[41] = {{0}, // (ダミー:Ver.0)
 										  56,  46,  16}
 										};
 
-// 層数識別テーブル
 char g_szLayerSetting [22][12] = { '\x00', '\x00', '\xFF', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00'
 								, '\x00', '\xFF', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00'
 								, '\xFF', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00', '\x00'
@@ -529,7 +533,6 @@ char g_szLayerSetting [22][12] = { '\x00', '\x00', '\xFF', '\x00', '\x00', '\x00
 #define ASCINT_ON            1
 #define ASCINT_OFF            0
 
-// １６進のアスキー文字からLong値に変換する。
 LONG AscHexToLong(PSTR pszData, int ilength)
 {
     LONG    lData = 0L;
@@ -557,15 +560,6 @@ LONG AscHexToLong(PSTR pszData, int ilength)
     return lData;
 }
 
-//********************************************************************
-//	Title	: バイナリ(1バイト)をHEXキャラクタ(2バイト)変換
-//	Function: void b1th2( unsigned char dat, char *p )
-//	[i/ ]	: unsigned char dat	: バイナリ
-//	[ /o]	: char *p			: 変換したhexキャラクタ列
-//	[ret]	: なし
-//
-//	例		: dat = 0x3f    ----->  *p = "3F"
-//********************************************************************
 void b1th2( unsigned char dat, char *p )
 {
 	static	char	hextb[] = "0123456789ABCDEF";
@@ -574,15 +568,6 @@ void b1th2( unsigned char dat, char *p )
 	*(p+1) = hextb[ (dat & 0x0f) ];
 }
 
-//********************************************************************
-//	Title	: HEXキャラクタ(2バイト)をバイナリ(1バイト)変換
-//	Function: unsigned char h2tb1( char *p )
-//	[i/ ]	: char *p			: hexキャラクタ列
-//	[i/o]	: なし
-//	[ret]	: unsigned char		: 変換したバイナリ
-//
-//	例		: *p = "3F"   ----->  0x3f
-//********************************************************************
 unsigned char h2tb1( char *p )
 {
 	unsigned char	d1,d2;
@@ -595,45 +580,33 @@ unsigned char h2tb1( char *p )
 }
 
 
-// ------------------------------------------------------------------------- //
-// 機能概要			:色補正テーブル作成										 //
-// 引数				:														 //
-// 戻り値			:RESULT_OK												 //
-//					:RESULT_ERROR_SECURE_MEMORY								 //
-// 備考				:														 //
-// ------------------------------------------------------------------------- //
 void MakeColorTable (int iColor, int iLayer) {
 	
-	long	lBaseColor [MAX_LAYERSIZE];										// 基本色テーブル（必要ないが最大色数確保する）
-	long	lColorCode;														// 色コード
-	int		iColorCount = 0;												// 色数
-	int		iColorCompound = 0;												// 合成色数
+	long	lBaseColor [MAX_LAYERSIZE];
+	long	lColorCode;
+	int		iColorCount = 0;
+	int		iColorCompound = 0;
 	int		iBits;
 	int		idiff = 0;
 
 	for (int i = 0; i < MAX_LAYERSIZE; i ++) {
-		lBaseColor [i] = 0;													// 黒(0x000000)で初期化
+		lBaseColor [i] = 0;
 	}
 	for (int i = 0; i < COLORTABLE_SIZE + 1; i ++) {
-		g_ColorCodeTable [i] = 0;											// 黒(0x000000)で初期化
+		g_ColorCodeTable [i] = 0;
 	}
 
-	// 先頭にグレーを入れる
 	g_ColorCodeTable [iColorCount]	= 0x7F7F7F;
 
-	// デフォルトの色を基本色テーブルにセットする
 	for (int i = 0; i < iLayer; i ++) {
-		// 色識別コード設定画面にて設定した色コードを使用して、色テーブルの作成を行う
-		// 解析時は、ＰＭコードから読込んだ色識別コードにてビットデータが何色か判断し
-		// その色番号に該当する色識別コード（画面にて設定）に変換を行う
-		if (g_ColorCodeSetting == 0) {										// 定義ファイル
+		if (g_ColorCodeSetting == 0) {
 			lColorCode = g_ColorCodeSettingDefinition [i];
-		} else {															// デフォルト値
-			if (iLayer == 3) {												// 層数は３
+		} else {
+			if (iLayer == 3) {
 				lColorCode = g_ColorCodeSetting3 [i];
-			} else if (iLayer > 9) {										// 層数は１０〜２４
+			} else if (iLayer > 9) {
 				lColorCode = g_ColorCodeSetting10to24 [i];
-			} else {														// 層数は３〜９
+			} else {
 				lColorCode = g_ColorCodeSetting4to9 [i];
 			}
 		}
@@ -641,7 +614,6 @@ void MakeColorTable (int iColor, int iLayer) {
 		g_ColorCodeTable [i+1]	= lColorCode;
 	}
 
-	// 複合色の作成
 	iColorCompound = pow ((float)2, iLayer) - 1;
 	iColorCount = iLayer + 1;
 	for (int i = 1; i <= iColorCompound; i ++){
@@ -657,9 +629,8 @@ void MakeColorTable (int iColor, int iLayer) {
 			iColorCount ++;
 		}
 	}
-	// 固定色項目
-	g_ColorCodeTable [iColorCount]		= 0;								// 黒
-	g_ColorCodeTable [iColorCount + 1]	= 0xFFFFFF;							// 白
+	g_ColorCodeTable [iColorCount]		= 0;
+	g_ColorCodeTable [iColorCount + 1]	= 0xFFFFFF;
 	g_ColorCodeTableSize = iColorCount + 2;
 }
 
