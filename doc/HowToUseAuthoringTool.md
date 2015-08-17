@@ -1,6 +1,6 @@
 # Image
 
-![https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/normal.png](https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/normal.png)
+![https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/normal.png](https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/normal.png)
 
 Refer to this image.
 It might be better to directly write down explanation on the image.。
@@ -20,7 +20,7 @@ Will be drawn here.
 
 
 ## Right field
-![https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/layer01.png](https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/layer01.png)
+![https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/layer01.png](https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/layer01.png)
 
 Field for choosing layer.
 
@@ -98,7 +98,7 @@ Lines and icons can be moved when this mode is on.
 ### Pen
 ※button icon: color pencil
 
-![https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/pen.png](https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/pen.png)
+![https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/pen.png](https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/pen.png)
 
 Can draw with a line.
 
@@ -110,7 +110,7 @@ The pallet will be shown on left side.
 ### Icon
 ※button icon: looks like a photo
 
-![https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/icon.png](https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/icon.png)
+![https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/icon.png](https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/icon.png)
 
 A list of usable icons will show up.
 After selecting the blank canvas you can draw on it.
@@ -130,7 +130,7 @@ Can erase icons and drawings.
 ### Background image
 ※button icon: camera
 
-https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/bg.PNG
+https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/bg.PNG
 
 Able to select the color or images for the background
 
@@ -149,7 +149,7 @@ Will draw in center.
 ### Page preference
 ※button icon: a cogwheel
 
-![https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/pref.png](https://raw.github.com/wiki/noritsuna/feelsketch/doc/images/pref.png)
+![https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/pref.png](https://raw.githubusercontent.com/noritsuna/feelsketch/master/doc/images/pref.png)
 
 #### Image Size
 Can select the size of the paper that the image is going to be printed on.
